@@ -9,7 +9,7 @@ public:
         
         int i = st.size()>0?(*st.begin()==0?0:1):1;
         for(auto& j:st){
-            cout<<j<<" ";
+            
             if(i==j)
                 i++;
             else return i;
