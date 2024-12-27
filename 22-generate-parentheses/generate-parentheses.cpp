@@ -30,7 +30,7 @@ public:
             }
             return;
         }
-        if(left<0||right<0||r>n||l>n) return ;
+        if(left<0||right<0) return ;
        
         if(left>0) solve(n,left-1,right,answer,s+"(");
         if (right>0) solve(n,left,right-1,answer,s+")");
