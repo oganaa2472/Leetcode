@@ -21,16 +21,15 @@ public:
         return true;
     }
     void solve(int n, int left,int right,vector<string>& answer,string s){
-        int l =  count(s.begin(), s.end(), '(');
-        int r =  count(s.begin(), s.end(), ')');
-        cout<<left<<" "<<right<<"s="<<s<<endl;
+      
+        if(left<0||right<0) return ;
         if(left==0&&right==0){
             if(isValid(s)){
                 answer.push_back(s);
             }
             return;
         }
-        if(left<0||right<0) return ;
+        
        
         if(left>0) solve(n,left-1,right,answer,s+"(");
         if (right>0) solve(n,left,right-1,answer,s+")");
