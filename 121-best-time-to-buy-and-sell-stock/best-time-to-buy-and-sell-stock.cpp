@@ -6,7 +6,6 @@ public:
         int n = prices.size();
         for(int i = 1;i<n;i++){
             minBuy = min(prices[i],minBuy);
-
             ans = max({ans,0,prices[i]-minBuy});
         }
         return ans;
