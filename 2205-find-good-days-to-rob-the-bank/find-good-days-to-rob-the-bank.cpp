@@ -20,7 +20,7 @@ public:
             }else{
                 suffixSum[i] = suffixSum[i+1];
             }
-            cout<<suffixSum[i]<<" ";
+          
         }
         vector<int> answer;
 
