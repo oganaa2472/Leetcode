@@ -1,20 +1,20 @@
 class Solution {
 public:
     int maxScore(string s) {
-        int n = s.size();
-        int mx = 0;
-        int zero=0;
-        int one=0;
-        for(int i = 0;i<n-1;i++){
-            one = 0;
-            if(s[i]=='0') zero++;
-            for(int j = i+1;j<n;j++){
-                if(s[j]=='1'){
-                    one++;
-                }
+        int ones = count(s.begin(), s.end(), '1');
+        
+        int ans = 0;
+        int zeros = 0;
+        for (int i = 0; i < s.size() - 1; i++) {
+            if (s[i] == '1') {
+                ones--;
+            } else {
+                zeros++;
             }
-            mx = max(mx,zero+one);
+            
+            ans = max(ans, zeros + ones);
         }
-        return mx;
+        
+        return ans;
     }
 };
