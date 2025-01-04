@@ -14,16 +14,18 @@ public:
         vector<int> dp(2e4+1,0);
 
         unordered_map<int,int> mp;
+        int mx_value = 0;
         for(auto n:nums){
             mp[n]++;
+            mx_value = max(mx_value,n);
         }
         dp[1] = mp[1];
 
-        for(int i = 2;i<dp.size();i++){
+        for(int i = 2;i<=mx_value;i++){
             dp[i] = max(dp[i-2]+mp[i]*i,dp[i-1]);
             // cout<<dp[i];
         }
     
-        return dp[dp.size()-1];
+        return dp[mx_value];
     }
 };
