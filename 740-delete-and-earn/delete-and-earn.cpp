@@ -12,17 +12,23 @@ public:
 
     int deleteAndEarn(vector<int>& nums) {
         
-        unordered_map<int,int> mp;
-        int mx_value = 0;
-        for(auto n:nums){
-            mp[n]++;
-            mx_value = max(mx_value,n);
-        }
-        vector<int> dp(mx_value+1,0);
-        dp[1] = mp[1];
-        for(int i = 2;i<=mx_value;i++){
-            dp[i] = max(dp[i-2]+mp[i]*i,dp[i-1]);
-        }
-        return dp[mx_value];
+        int n = 10001;
+    
+	//take the total sum by each number
+    vector<int> sum(n, 0);
+    vector<int> dp(n, 0);
+    
+    for(auto num: nums){
+        sum[num] += num;
+    }
+    
+    dp[0] = 0;
+    dp[1] = sum[1];
+    //now apply the house robbing concept
+    for(int i=2; i<n; i++){
+        dp[i] = max(dp[i-2] + sum[i], dp[i-1]);
+    }
+    
+    return dp[n-1];
     }
 };
