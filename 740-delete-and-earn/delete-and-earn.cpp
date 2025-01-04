@@ -11,21 +11,18 @@ public:
     // }
 
     int deleteAndEarn(vector<int>& nums) {
-        vector<int> dp(2e4+1,0);
-
+        
         unordered_map<int,int> mp;
         int mx_value = 0;
         for(auto n:nums){
             mp[n]++;
             mx_value = max(mx_value,n);
         }
+        vector<int> dp(mx_value+1,0);
         dp[1] = mp[1];
-
         for(int i = 2;i<=mx_value;i++){
             dp[i] = max(dp[i-2]+mp[i]*i,dp[i-1]);
-            // cout<<dp[i];
         }
-    
         return dp[mx_value];
     }
 };
