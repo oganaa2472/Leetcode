@@ -1,18 +1,27 @@
 class Solution {
 public:
-    int dp[366];
-    
-    int mincostTickets(vector<int>& days, vector<int>& costs) {
-        int n = days.size();
-        int j = 0;
-        int k = 0;
-        for(int i = 0;i<days.size();i++){
-            
-            while(days[i]-days[j]>=7)j++;
-            while(days[i]-days[k]>=30)k++;
-            dp[i+1]=min(dp[i]+costs[0],min(dp[j]+costs[1],dp[k]+costs[2]));
+    unordered_set<int> isTravelNeeded;
+    int solve(vector<int>& dp, vector<int>& days, vector<int>& costs, int currDay) {
+        if (currDay > days[days.size() - 1]) {
+            return 0;
         }
-        return dp[n];
-
+        if (isTravelNeeded.find(currDay) == isTravelNeeded.end()) {
+            return solve(dp, days, costs, currDay + 1);
+        }
+        if (dp[currDay] != -1) {
+            return dp[currDay];
+        }
+        int oneDay = costs[0] + solve(dp, days, costs, currDay + 1);
+        int sevenDay = costs[1] + solve(dp, days, costs, currDay + 7);
+        int thirtyDay = costs[2] + solve(dp, days, costs, currDay + 30);
+        return dp[currDay] = min(oneDay, min(sevenDay, thirtyDay));
+    }
+    int mincostTickets(vector<int>& days, vector<int>& costs) {
+       int lastDay = days[days.size() - 1];
+       vector<int> dp(lastDay + 1, -1);
+        for (int day : days) {
+            isTravelNeeded.insert(day);
+        }
+        return solve(dp, days, costs, 1);
     }
 };
