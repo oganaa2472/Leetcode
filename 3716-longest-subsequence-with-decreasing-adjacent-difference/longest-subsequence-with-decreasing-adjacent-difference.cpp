@@ -1,28 +1,22 @@
 class Solution {
 public:
     int longestSubsequence(vector<int>& nums) {
-        vector<vector<int>> dp(302, vector<int>(302));
+        int n = nums.size();
+        vector<vector<int>> dp(301, vector<int>(301, 0));
+        int maxLength = 1;
 
-        for (int i = nums.size() - 1; i >= 0; --i){
-            int num = nums[i];
-    
-            for (int next = 1; next <= 300; ++next){
-                int diff = abs(next - num);
-                dp[num][diff] = max(dp[num][diff], dp[next][diff] + 1);
+        for (int i = n - 1; i >= 0; i--) {
+            int current = nums[i];
+            for (int next = 1; next <= 300; next++) {
+                int difference = abs(current - next);
+                dp[current][difference] = max(dp[current][difference], dp[next][difference] + 1);
             }
-
-            for (int j = 1; j <= 300; ++j){
-                dp[num][j] = max(dp[num][j], dp[num][j - 1]);
+            for (int diff = 1; diff <= 300; diff++) {
+                dp[current][diff] = max(dp[current][diff], dp[current][diff - 1]);
             }
+            maxLength = max(maxLength, dp[current][300]);
         }
 
-        int ans = INT_MIN;
-        for (int i = 0; i <= 301; ++i){
-            for (int j = 0; j <= 301; ++j){
-                ans = max(ans, dp[i][j]);
-            }
-        }
-
-        return ans;
+        return maxLength;
     }
 };
