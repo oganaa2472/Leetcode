@@ -10,7 +10,6 @@ public:
         int even = 0;
         int ceven = 0;
         for(auto [x,y] : m){
-            // cout<<x<<"="<<y;
             if(y==1) count++;
             else if(y%2==1){
                 count++;
