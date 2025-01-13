@@ -11,9 +11,11 @@ public:
         for(auto st : strs){
             mp[isAnagram(st)].push_back(st);
         }
-        vector<vector<string>> ans;
+        vector<vector<string>> ans(mp.size());
+        int i = 0;
         for(auto& [x,y]:mp){
-            ans.push_back(y);
+            ans[i] = (y);
+            i++;
         }
         return ans;
     }
