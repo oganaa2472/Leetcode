@@ -1,21 +1,20 @@
 class MyHashSet {
 public:
-    unordered_set<int> st;
+    vector<bool> myhash;
     MyHashSet() {
-        st.clear();
+      myhash.resize(1e6+1);
     }
     
     void add(int key) {   
-        st.insert(key);
+        myhash[key] = true;
     }
     
     void remove(int key) {
-        st.erase(key);
+        myhash[key] = false;
     }
     
     bool contains(int key) {
-        if(st.find(key)!=st.end()) return true;
-        return false;
+        return myhash[key];
     }
 };
 
