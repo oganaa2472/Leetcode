@@ -5,7 +5,6 @@ public:
     int minimizeXor(int num1, int num2) {
         int bit2 = __builtin_popcount(num2);
         int bit1 = __builtin_popcount(num1);
-        int first = __builtin_clz(num1);
         int ans = 0;
 
         for (int i = 31; i >= 0; i--) {
