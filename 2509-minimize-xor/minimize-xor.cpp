@@ -13,16 +13,13 @@ public:
                 ans += (1<<i);
                 bit2--;
                 if(bit2==0) break;   
-                // bit2--;
            } 
         }
         int i = 0;
         if(bit2>0){
             while(bit2>0){
-                if(ans&(1<<i)){
-                   
-                }else{
-                    ans += (1<<i);
+                if(!(ans&(1<<i))){
+                   ans += (1<<i);
                    bit2--;
                 }
                 i++;
