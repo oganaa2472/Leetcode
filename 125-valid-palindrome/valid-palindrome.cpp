@@ -1,6 +1,32 @@
 class Solution {
 public:
+    
     bool isPalindrome(string s) {
+    //    int i = 0;
+    //    int j = s.size()-1;
+
+    //    while(i<j){
+    //     char ch = tolower(s[i]);
+    //     char c2 = tolower(s[j]);
+        
+    //     if((isalpha(ch)||isdigit(ch))&&(isalpha(c2)&&isdigit(ch))){
+    //         if(ch==c2) {
+    //             i++;
+    //             j--;
+    //         }else{
+    //             return false;
+    //         }
+    //     }
+    //     else if((!isalpha(ch)&&!isdigit(ch))){
+    //         i++;
+    //     }
+    //     else if((!isalpha(c2)&&!isdigit(c2))) {
+    //        j--;
+    //     }else{
+    //         i++;
+    //     }
+    //    }
+    //    return true;
         string res ;
         int n =s.size();
         for(int i =0;i<n;i++){
