@@ -2,7 +2,7 @@ class NumArray {
 public:
     struct segtree {
         int size;
-        vector<long long> sums;
+        vector<int> sums;
         void init(int n) {
             size = 1;
             while (size < n) size *= 2;
