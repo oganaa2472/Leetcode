@@ -1,28 +1,21 @@
 class Solution {
 public:
-    double binaryExp(double x, long long n) {
-        if (n == 0) {
-            return 1;
-        }
-       
-        if (n < 0) {
-            n = -1 * n;
-            x = 1.0 / x;
-        }
-       
-        double result = 1;
-        while (n) {
-            if (n % 2 == 1) {
-                result = result * x;
-                n -= 1;
-            }
+    double binPow(double x,long long n){
+       if(n==0) return 1.00000;
+       if(n<0){
+        x = 1.0/x;
+        n = -1*n;
+       }
+        double res = 1;
+        while (n > 0) {
+            if (n & 1)
+                res = res * x;
             x = x * x;
-            n = n / 2;
+            n >>= 1;
         }
-        return result;
-    }
-
+        return res;
+        }
     double myPow(double x, int n) {
-        return binaryExp(x, (long long) n);
+        return binPow(x, (long long) n);
     }
 };
