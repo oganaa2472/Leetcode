@@ -11,15 +11,15 @@ public:
             }
             st.push(i);
         }
-        vector<int> answer(nums1.size());
-        for(int i = 0;i<nums1.size();i++){
-            for(int j = 0;j<n;j++){
-                if(nums1[i]==nums2[j]){
-                    answer[i]=result[j];
-                    break;
-                }
-            }
+        unordered_map<int,int> mp;
+        for(int i = 0 ; i< nums2.size();i++){
+            mp[nums2[i]] = result[i];
         }
-        return answer;
+        vector<int> ans(nums1.size());
+        for(int i = 0; i < nums1.size(); i++){
+            ans[i] = mp[nums1[i]];
+        }
+        return ans;
+        
     }
 };
