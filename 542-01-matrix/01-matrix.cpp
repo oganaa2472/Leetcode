@@ -8,7 +8,7 @@ public:
         vector<vector<int>> answer(n, vector<int>(m, INT_MAX)); 
         queue<pair<int, int>> q;
 
-        // Add all cells with 0 to the queue and set their distance to 0
+       
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
                 if (mat[i][j] == 0) {
@@ -18,7 +18,7 @@ public:
             }
         }
 
-        // Perform BFS
+        
         while (!q.empty()) {
             int cx = q.front().first;
             int cy = q.front().second;
@@ -28,7 +28,7 @@ public:
                 int tx = cx + dir.first;
                 int ty = cy + dir.second;
 
-                // Check if the cell is valid and can be updated
+               
                 if (tx >= 0 && ty >= 0 && tx < n && ty < m) {
                     if (answer[tx][ty] > answer[cx][cy] + 1) {
                         answer[tx][ty] = answer[cx][cy] + 1;
