@@ -10,21 +10,17 @@ public:
         }
         return res;
     }
-    long long distributeCandies(int n, int limit) {
-         long long total = binomialCoefficient(n + 2, 2);
+        long long distributeCandies(int n, int limit) {
+            long long answer = 0;
 
-    // Subtract cases where one child gets more than 'limit' candies
-    long long invalid1 = 3 * binomialCoefficient((n - (limit + 1)) + 2, 2);
+            long long fmax = min(limit,n);
+            long long fmin = max(0,n-(2*limit));
 
-    // Add cases where two children get more than 'limit' candies (inclusion-exclusion)
-    long long invalid2 = 3 * binomialCoefficient((n - 2 * (limit + 1)) + 2, 2);
-
-    // Subtract cases where all three children get more than 'limit' candies
-    long long invalid3 = binomialCoefficient((n - 3 * (limit + 1)) + 2, 2);
-
-    // Apply inclusion-exclusion principle
-    long long validWays = total - invalid1 + invalid2 - invalid3;
-
-    return validWays;
+            for(int i = fmin; i<=fmax;i++){
+                long long left = min(limit,n-i);
+                long long right = max(0,n-i-limit);
+                answer += left - right + 1;
+            }
+            return answer;
     }
 };
