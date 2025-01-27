@@ -4,13 +4,13 @@ public:
         return end+1-start-count<=k;
     }
     int characterReplacement(string s, int k) {
-        unordered_map<char,bool> letters;
+        unordered_set<char> letters;
         for(char& c:s){
-            letters[c]=true;
+            letters.insert(c);
         }
 
         int answer = 0;
-        for(auto [letter,x]:letters){
+        for(auto& letter:letters){
             int start=0;
 
             int count = 0;
