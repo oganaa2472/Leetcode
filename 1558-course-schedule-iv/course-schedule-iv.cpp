@@ -1,34 +1,48 @@
 class Solution {
 public:
-    unordered_set<int> dfs(int crs, unordered_map<int, vector<int>>& adj, unordered_map<int, unordered_set<int>>& prereqMap) {
-    if (prereqMap.find(crs) == prereqMap.end()) {
-        prereqMap[crs] = unordered_set<int>();
-        for (int prereq : adj[crs]) {
-            auto prereqSet = dfs(prereq, adj, prereqMap);
-            prereqMap[crs].insert(prereqSet.begin(), prereqSet.end());
+    
+    void dfs(int node, vector<vector<int>> &adj, vector<bool> &visited, set<pair<int, int>> &s, int start) {
+       
+        visited[node] = true;
+
+      
+        if (start != -1) {
+            s.insert({start, node});
         }
-        prereqMap[crs].insert(crs); 
+
+        
+        for (int neighbor : adj[node]) {
+            if (!visited[neighbor]) {
+                dfs(neighbor, adj, visited, s, start);
+            }
+        }
     }
-    return prereqMap[crs];
-}
 
-    vector<bool> checkIfPrerequisite(int numCourses, vector<vector<int>>& prerequisites, vector<vector<int>>& queries) {
-        unordered_map<int, vector<int>> adj;
-        for (const auto& pair : prerequisites) {
-            adj[pair[1]].push_back(pair[0]);
+   
+    vector<bool> checkIfPrerequisite(int n, vector<vector<int>> &pre, vector<vector<int>> &q) {
+       
+        vector<vector<int>> adj(n);
+        for (const auto &p : pre) {
+            adj[p[0]].push_back(p[1]); 
         }
 
-        unordered_map<int, unordered_set<int>> prereqMap;
-
-        for (int crs = 0; crs < numCourses; ++crs) {
-            dfs(crs, adj, prereqMap);
-        }
-        vector<bool> res;
-        for (const auto& query : queries) {
-            int u = query[0], v = query[1];
-            res.push_back(prereqMap[v].count(u) > 0);
+       
+        set<pair<int, int>> s;
+        for (int i = 0; i < n; i++) {
+           
+            vector<bool> visited(n, false);
+            dfs(i, adj, visited, s, i);    
         }
 
-        return res;
+       
+        vector<bool> result(q.size(), false); 
+        for (int i = 0; i < q.size(); i++) {
+          
+            if (s.find({q[i][0], q[i][1]}) != s.end()) {
+                result[i] = true; 
+            }
+        }
+
+        return result;
     }
 };
