@@ -9,20 +9,20 @@ public:
             p1.push_back(make_pair(position[i],(double)(target-position[i])/speed[i]));
         }
         sort(p1.begin(),p1.end());
-        int t = n;
+        int t = n-1;
         int ans = 1;
-        while(--t>0){
+        while(t>0){
             if(p1[t].second<p1[t-1].second){
                 ans++;
             }else{
                 p1[t-1] = p1[t];
             }
-            // t--;
+            t--;
 
             
         }
 
-        // if(t==0) ans++;
+       
         return ans;
     }
 };
