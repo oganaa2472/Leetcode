@@ -10,7 +10,7 @@ public:
         }
         sort(p1.begin(),p1.end());
         int t = n;
-        int ans = 0;
+        int ans = 1;
         while(--t>0){
             if(p1[t].second<p1[t-1].second){
                 ans++;
@@ -22,7 +22,7 @@ public:
             
         }
 
-        if(t==0) ans++;
+        // if(t==0) ans++;
         return ans;
     }
 };
