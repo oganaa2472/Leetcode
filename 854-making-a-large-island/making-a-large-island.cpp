@@ -39,7 +39,7 @@ public:
         int maxArea= 1;
         for(int i = 0;i<n;i++){
             for(int j=0;j<m;j++){
-                cout<<grid[i][j];
+               
                 if (grid[i][j] == 0) {
                     int current = 1;
                     unordered_set<int> neighbor;
