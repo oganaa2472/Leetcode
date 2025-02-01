@@ -4,7 +4,7 @@ public:
     int totalSum;
     int target;
     int solve(int i,int target,int sum,vector<int>&nums,vector<vector<int>>& dp){
-        if (sum >= target or i == nums.size()-1)
+        if (sum >= target or i == nums.size())
             return abs(sum-(totalSum-sum));
         if (dp[i][sum] != -1){
             return dp[i][sum];
