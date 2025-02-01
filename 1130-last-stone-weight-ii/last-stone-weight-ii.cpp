@@ -4,7 +4,7 @@ public:
     int totalSum;
     int target;
     int solve(int i,int target,int sum,vector<int>&nums,vector<vector<int>>& dp){
-        if (sum >= target or i == nums.size())
+        if (sum >= target or i == nums.size()-1)
             return abs(sum-(totalSum-sum));
         if (dp[i][sum] != -1){
             return dp[i][sum];
@@ -21,11 +21,8 @@ public:
     int lastStoneWeightII(vector<int>& stones) {
         n = stones.size();
         totalSum = accumulate(stones.begin(),stones.end(),0);
-
         target = totalSum/2;
-
         vector<vector<int>> dp(n,vector<int>(totalSum,-1));
-
         return solve(0,target,0,stones,dp);
     }
 };
