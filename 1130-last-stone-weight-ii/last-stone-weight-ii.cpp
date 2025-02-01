@@ -1,22 +1,31 @@
 class Solution {
 public:
+    int n ;
+    int totalSum;
+    int target;
+    int solve(int i,int target,int sum,vector<int>&nums,vector<vector<int>>& dp){
+        if (sum >= target or i == nums.size())
+            return abs(sum-(totalSum-sum));
+        if (dp[i][sum] != -1){
+            return dp[i][sum];
+        }
+        if(dp[i][sum]!=-1) return dp[i][sum];
+        int ans = INT_MAX;
+        int include = solve(i+1,target,sum+nums[i],nums,dp);
+
+        int exclude = solve(i+1,target,sum,nums,dp);
+
+        return dp[i][sum] = min(include,exclude);
+
+    }
     int lastStoneWeightII(vector<int>& stones) {
-       int totalSum = accumulate(stones.begin(), stones.end(), 0);
-        int target = totalSum / 2;
-        vector<bool> dp(target + 1, false);
-        dp[0] = true;
+        n = stones.size();
+        totalSum = accumulate(stones.begin(),stones.end(),0);
 
-        for (int stone : stones) {
-            for (int j = target; j >= stone; --j) {
-                dp[j] = dp[j] || dp[j - stone];
-            }
-        }
+        target = totalSum/2;
 
-        for (int bestSum = target; bestSum >= 0; --bestSum) {
-            if (dp[bestSum]) {
-                return totalSum - 2 * bestSum;
-            }
-        }
-        return 0;
+        vector<vector<int>> dp(n,vector<int>(totalSum,-1));
+
+        return solve(0,target,0,stones,dp);
     }
 };
