@@ -1,16 +1,19 @@
 class Solution {
 public:
     bool check(vector<int>& nums) {
-        vector<int> num = nums;
-        sort(num.begin(),num.end());
         int n = nums.size();
-        for(int i = 0;i<nums.size();i++){
-            vector<int> arr = nums;
-            for(int i = 0;i<nums.size();i++){
-                nums[i] = arr[(i+1)%n];
+        if (n <= 1) return true;
+
+        int count = 0;
+        for (int i = 1; i < n; ++i) {
+            if (nums[i] < nums[i - 1]) {
+                count++;
             }
-            if(nums==num) return true;
         }
-        return false;
+        if (nums[0] < nums[n - 1]) {
+            ++count;
+        }
+
+        return count <= 1;
     }
 };
