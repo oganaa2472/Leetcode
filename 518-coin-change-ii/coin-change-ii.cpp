@@ -1,30 +1,22 @@
 class Solution {
 public:
-    int dfs(int sum, vector<int>& coins, int amount, int index, vector<vector<int>>& memo) {
-        // Base cases
-        if (sum == amount) return 1;
-        if (sum > amount || index >= coins.size()) return 0;
+    vector<int> coins;
+    vector<vector<int>> dp;
 
-        // Check if the result is already computed for (sum, index)
-        if (memo[sum][index] != -1) {
-            return memo[sum][index];
+    int solve(int index,int amount){
+        if(amount<0) return 0;
+        if(amount==0) return 1;
+        if(dp[amount][index]!=-1) return dp[amount][index];
+        int answer = 0;
+        for(int i = index;i<coins.size();i++){
+            answer += solve(i,amount-coins[i]);
         }
-
-        // Option 1: Include the current coin
-        int include = dfs(sum + coins[index], coins, amount, index, memo);
-        
-        // Option 2: Exclude the current coin
-        int exclude = dfs(sum, coins, amount, index + 1, memo);
-
-        // Store result in memo table
-        memo[sum][index] = include + exclude;
-        return memo[sum][index];
+        return dp[amount][index] = answer;
     }
-
     int change(int amount, vector<int>& coins) {
-        int n = coins.size();
-        // Initialize memo table with -1, dimensions (amount + 1) x n
-        vector<vector<int>> memo(amount + 1, vector<int>(n, -1));
-        return dfs(0, coins, amount, 0, memo);
+         dp.resize(amount+1,vector<int>(coins.size()+1,-1));
+        this->coins = coins;
+        
+        return solve(0,amount);
     }
 };
