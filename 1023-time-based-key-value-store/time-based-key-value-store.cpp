@@ -13,21 +13,15 @@ public:
     
     string get(string key, int timestamp) {
         auto it = t.upper_bound({key,timestamp});
-
         if (it == t.begin()){
             return "";
         }
-        
-
-
-        --it;
-        if (it->first.first==key) {
-            return it->second;
-        } else {
-           return "";
-        }
-        // cout<<it->second;
-      
+        // if(it!=t.end()){
+            --it;
+            if(it->first.first==key){
+                return it->second;
+            }else return "";
+        // }
     }
 };
 
