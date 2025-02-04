@@ -25,7 +25,7 @@ public:
         if (sum % k != 0) return false; // Хэрэв нийт нийлбэр k-д хуваагдахгүй бол боломжгүй
 
         target = sum / k;
-        sort(nums.rbegin(), nums.rend()); // Том тоонуудыг эхэнд нь авч optimization хийх
+        // sort(nums.rbegin(), nums.rend()); // Том тоонуудыг эхэнд нь авч optimization хийх
 
         return canPartition(nums, k, 0, 0, 0);
     }
