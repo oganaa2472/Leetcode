@@ -1,24 +1,38 @@
 class Solution {
 public:
-  
-    int maxProduct(vector<int>& nums) {
-        int n = nums.size();
-    
-        
-        int mx = nums[0];
-        int ans = mx;
-        ans = max(ans,nums[n-1]);
-        for(int i = 1 ;i<n;i++){
-            mx = nums[i-1];
-            ans = max(nums[i-1],ans);
-            for(int j = i;j<n;j++){
-                mx = mx * nums[j];
-                ans = max(ans,mx);
-            }
+    int n;
+    vector<int> minDp,maxDp;
+    vector<int> nums;
+    int solve(int index){
+        if (index == 0) {
+            minDp[0] = maxDp[0] = nums[0];
+            return nums[0];
         }
+        if(maxDp[index]!=INT_MIN) return maxDp[index];
+
+        int prev_max = solve(index - 1);
+        int prev_min = minDp[index - 1];
+
         
-        
-        return ans;
+        maxDp[index] = max({nums[index], nums[index] * prev_max, nums[index] * prev_min});
+        minDp[index] = min({nums[index], nums[index] * prev_max, nums[index] * prev_min});
+
+        return maxDp[index];
+      
+    }
+    int maxProduct(vector<int>& nums) {
+        n = nums.size();
+        this->nums = nums;
+        maxDp.assign(n, INT_MIN); 
+        minDp.assign(n, INT_MAX);
+
+        int result = INT_MIN;
+
+        for (int i = 0; i < n; i++) {
+            result = max(result, solve(i));
+        }
+        return result;
+       
 
     }
 };
