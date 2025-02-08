@@ -23,14 +23,14 @@ public:
 
             if((new_mask!=mask)) // if i would add new skill
             {
-                vector<int> new_team = solve(new_mask);//check next team
-                new_team.push_back(i);
-                if (team.empty() || new_team.size() < team.size()) {
-                    team = new_team;
+                vector<int> new_team = solve(new_mask);//check next team or moving next state
+                new_team.push_back(i);// add current person 
+                if (team.empty() || new_team.size() < team.size()) {// check minimum team you obtain it 
+                    team = new_team; // you found min team
                 }
             }
         }
-        return dp[mask] = team;
+        return dp[mask] = team;// saved dp 
 
 
     }
@@ -42,9 +42,10 @@ public:
         for (auto& person : people) {
             int mask = 0;
             for (auto& skill : person) {
+                // cout<<skill_index[skill];
                 mask |= (1 << skill_index[skill]); // person skill convert to bit 
             }
-            cout<<mask<<" ";
+            // cout<<endl;
             people_skills.push_back(mask);
         }
         return solve(0);
