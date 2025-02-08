@@ -1,6 +1,6 @@
 class Solution {
 public:
-    unordered_map<int, bool> memo; // DP хадгалах сан
+    unordered_map<int, bool> memo; 
     int maxChoose, target;
     bool dfs(int state,int currentTotal){
         if(memo.count(state)) return memo[state];
