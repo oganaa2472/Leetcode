@@ -1,37 +1,36 @@
 class Solution {
 public:
+    multiset<int> s;
+    multiset<int>::iterator mid;
+    void insertX(int x) {
+        s.insert(x);
+        if (s.size() == 1) {
+            mid = s.begin(); // Эхний элемент дунд нь
+            return;
+        }
+
+        if (x < *mid) {
+            if (s.size() % 2 == 0) --mid; // Дараалал тэгш бол буцаана
+        } else {
+            if (s.size() % 2 == 1) ++mid; // Дараалал сондгой бол урагшлуулна
+        }
+    }
+
+    int getMedian() {
+        return *mid;
+    }
     double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
-        if (nums1.size() > nums2.size()) {
-            return findMedianSortedArrays(nums2, nums1);
+        
+        for(int i = 0;i<nums1.size();i++){
+            insertX(nums1[i]);
         }
-
-        int m = nums1.size(), n = nums2.size();
-        int left = 0, right = m;
-
-        while (left <= right) {
-            int partitionA = (left + right) / 2;
-            int partitionB = (m + n + 1) / 2 - partitionA;
-
-            int maxLeftA = (partitionA == 0) ? INT_MIN : nums1[partitionA - 1];
-            int minRightA = (partitionA == m) ? INT_MAX : nums1[partitionA];
-            int maxLeftB = (partitionB == 0) ? INT_MIN : nums2[partitionB - 1];
-            int minRightB = (partitionB == n) ? INT_MAX : nums2[partitionB];
-
-            if (maxLeftA <= minRightB && maxLeftB <= minRightA) {
-                if ((m + n) % 2 == 0) {
-                    return (max(maxLeftA, maxLeftB) +
-                            min(minRightA, minRightB)) /
-                           2.0;
-                } else {
-                    return max(maxLeftA, maxLeftB);
-                }
-            } else if (maxLeftA > minRightB) {
-                right = partitionA - 1;
-            } else {
-                left = partitionA + 1;
-            }
+        for(int i = 0;i<nums2.size();i++){
+            insertX(nums2[i]);
         }
-
-        return 0.0;
+        if(s.size()%2==1) return getMedian();
+        double x = getMedian();
+        mid++;
+        double y = getMedian();
+        return (x+y)/2;
     }
 };
