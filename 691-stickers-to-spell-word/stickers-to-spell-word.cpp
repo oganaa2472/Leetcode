@@ -3,7 +3,7 @@ public:
     int n; 
     unordered_map<int, int> memo;
 
-    int dp(vector<vector<int>>& stickersCount, string& target, int mask) {
+    int solve(vector<vector<int>>& stickersCount, string& target, int mask) {
         if (mask == (1 << n) - 1) return 0; 
         if (memo.count(mask)) return memo[mask];
         int res = INT_MAX;
@@ -21,7 +21,7 @@ public:
 
             
             if (new_mask != mask) {
-                int next = dp(stickersCount, target, new_mask);
+                int next = solve(stickersCount, target, new_mask);
                 if (next != INT_MAX) {
                     res = min(res, 1 + next);
                 }
@@ -33,15 +33,14 @@ public:
     int minStickers(vector<string>& stickers, string target) {
         n = target.size();
 
-      
         vector<vector<int>> stickersCount;
         for (auto& sticker : stickers) {
             vector<int> count(26, 0);
             for (char c : sticker) count[c - 'a']++;
             stickersCount.push_back(count);
         }
-
-        int answer = dp(stickersCount, target, 0);
+        int answer = solve(stickersCount, target, 0);
         return answer == INT_MAX ? -1 : answer;
+
     }
 };
