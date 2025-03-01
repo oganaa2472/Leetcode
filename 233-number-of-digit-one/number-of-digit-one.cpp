@@ -2,7 +2,7 @@ class Solution {
 public:
 
 string num;
-int dp[20][20][2];  // dp[pos][count7][tight]
+int dp[10][20][2];  // dp[pos][count7][tight]
 
 int digit_dp(int pos, int count1, bool tight) {
     if (pos == num.size()) return count1;  // 1 цифрийг агуулсан эсэх
