@@ -1,28 +1,24 @@
 class Solution {
 public:
-    int solve(int ext, int ind, vector<int>& nums, vector<vector<int>> &dp){
-       
-        if(ind == nums.size()) return nums[ext];
+    vector<vector<int>> dp;
 
-       
-        if(ind == nums.size()-1) return max(nums[ext], nums[ind]);
+    int solve(int i,int j,vector<int>& nums,vector<vector<int>>&dp){
+        if(i == nums.size()) return nums[j];
+        if(i == nums.size()-1) return max(nums[i], nums[j]);
+        if(dp[i][j]!=-1) return dp[i][j];
+        
+        
 
-        if(dp[ind][ext] != -1) return dp[ind][ext];
-
-      
-        int f = max(nums[ind], nums[ind+1]) + solve(ext, ind+2, nums, dp);
-        int s = max(nums[ext], nums[ind+1]) + solve(ind, ind+2, nums, dp);
-        int t = max(nums[ext], nums[ind]) + solve(ind+1, ind+2, nums, dp);
-
-  
-        return dp[ind][ext] = min({f, s, t});
+        
+        int op1 = max(nums[i],nums[i+1]) + solve(i+2,j,nums,dp);
+        int op2 = max(nums[j],nums[i+1])+ solve(i+2,i,nums,dp);
+        int op3 = max(nums[j],nums[i])+solve(i+2,i+1,nums,dp);
+        return dp[i][j] = min({op1,op2,op3});
     }
-
     int minCost(vector<int>& nums) {
         int n = nums.size();
+        vector<vector<int>> dp(n+1,vector<int>(n+1,-1));
 
-      
-        vector<vector<int>> dp(n+1, vector<int>(n+1, -1));
-        return solve(0, 1, nums, dp);
+        return solve(1,0,nums,dp);
     }
 };
