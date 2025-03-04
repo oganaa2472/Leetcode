@@ -4,9 +4,9 @@ public:
     int n;
 
     int solve(vector<vector<int>>& matrix, int i, int j) {
-        if (j < 0 || j >= n) return INT_MAX; 
-        if (i == n - 1) return matrix[i][j]; 
-        if (memo[i][j] != INT_MAX) return memo[i][j]; 
+        if (j < 0 || j >= n) return INT_MAX;
+        if (i == n - 1) return matrix[i][j];
+        if (memo[i][j] != INT_MAX) return memo[i][j];
 
         int min_value = INT_MAX;
         for (int k = 0; k < n; k++) {
