@@ -2,60 +2,53 @@ class Solution {
 public:
     int minAbsDifference(vector<int>& nums, int goal) {
         int n = nums.size();
-        vector<int> a, b;
-        
-        // Split the array into two halves
-        for(int i = 0; i < n / 2; i++) {
-            a.push_back(nums[i]);
-        }
-        for(int i = n / 2; i < n; i++) {
-            b.push_back(nums[i]);
-        }
-        
+        int half = n / 2;
+        vector<int> left_part(nums.begin(), nums.begin() + half);
+        vector<int> right_part(nums.begin() + half, nums.end());
+
         vector<int> left, right;
 
-        // Generate subset sums for left part
-        for(int i = 0; i < (1 << a.size()); i++) {
-            int l = 0;
-            for(int j = 0; j < a.size(); j++) {
-                if(i & (1 << j)) {  // Correct bitwise operation
-                    l += a[j]; 
+        // Generate all subset sums for the left half
+        for(int i = 0; i < (1 << left_part.size()); i++) {
+            int sum = 0;
+            for(int j = 0; j < left_part.size(); j++) {
+                if(i & (1 << j)) {  // Corrected bitwise check
+                    sum += left_part[j];
                 }
             }
-            left.push_back(l);
+            left.push_back(sum);
         }
 
-        // Generate subset sums for right part
-        for(int i = 0; i < (1 << b.size()); i++) {
-            int r = 0;
-            for(int j = 0; j < b.size(); j++) {
-                if(i & (1 << j)) {  // Correct bitwise operation
-                    r += b[j]; 
+        // Generate all subset sums for the right half
+        for(int i = 0; i < (1 << right_part.size()); i++) {
+            int sum = 0;
+            for(int j = 0; j < right_part.size(); j++) {
+                if(i & (1 << j)) {  // Corrected bitwise check
+                    sum += right_part[j];
                 }
             }
-            right.push_back(r);
+            right.push_back(sum);
         }
 
-        // Sort right sums for binary search
+        // Sort right subset sums for binary search
         sort(right.begin(), right.end());
 
         int ans = INT_MAX;
 
-        // Try to find closest pair (s from left, b from right)
+        // Find the closest sum using binary search
         for(int s : left) {
-            int l = 0, r = right.size() - 1;
-            while(l <= r) {
-                int mid = l + (r - l) / 2;
-                int sum = s + right[mid];
-                ans = min(ans, abs(goal - sum));
-                if(ans == 0) return 0;  // Found perfect match
-                if(sum < goal) {
-                    l = mid + 1;
-                } else {
-                    r = mid - 1;
-                }
+            int target = goal - s;
+            auto it = lower_bound(right.begin(), right.end(), target);
+            
+            if(it != right.end()) {
+                ans = min(ans, abs(goal - (s + *it)));  // Case when found or just larger
+            }
+            if(it != right.begin()) {
+                it--;
+                ans = min(ans, abs(goal - (s + *it)));  // Case when just smaller
             }
         }
+
         return ans;
     }
 };
