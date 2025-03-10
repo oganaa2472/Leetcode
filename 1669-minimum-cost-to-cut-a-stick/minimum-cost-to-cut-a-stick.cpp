@@ -1,27 +1,33 @@
 class Solution {
 public:
-    vector<vector<int>> dp;
-    vector<int> cuts;
-    int solve(int left,int right){
-        if(dp[left][right]!=-1) return dp[left][right];
-        if(right-left==1) return 0;
-        
-        int ans = INT_MAX;
-        for(int k = left+1;k<right;k++){
-            int cost = solve(left,k) + solve(k,right) + cuts[right]-cuts[left];
-            ans = min(ans,cost);
+       vector<vector<int>> memo;
+    vector<int> newCuts;
+
+    int cost(int left, int right) {
+        if (memo[left][right] != -1) {
+            return memo[left][right];
         }
-        return dp[left][right] = ans;
-        
+        if (right - left == 1) {
+            return 0;
+        }
+        int ans = INT_MAX;
+        for (int mid = left + 1; mid < right; ++mid) {
+            int currentCost = cost(left, mid) + cost(mid, right) + newCuts[right] - newCuts[left];
+            ans = min(ans, currentCost);
+        }
+        return memo[left][right] = ans;
     }
+
+public:
     int minCost(int n, vector<int>& cuts) {
-        int m = n+2;
-       
-        cuts.push_back(0);
-        cuts.push_back(n);
-        sort(cuts.begin(),cuts.end());
-        dp.resize(102,vector<int>(m,-1));
-        this->cuts=cuts;
-        return solve(0,cuts.size()-1);
+        int m = cuts.size();
+        newCuts.resize(m + 2);
+        newCuts[0] = 0;
+        copy(cuts.begin(), cuts.end(), newCuts.begin() + 1);
+        newCuts[m + 1] = n;
+        sort(newCuts.begin(), newCuts.end());
+
+        memo.assign(m + 2, vector<int>(m + 2, -1));
+        return cost(0, newCuts.size() - 1);
     }
 };
