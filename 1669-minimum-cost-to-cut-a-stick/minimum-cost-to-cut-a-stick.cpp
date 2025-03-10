@@ -15,14 +15,12 @@ public:
         
     }
     int minCost(int n, vector<int>& cuts) {
+
         cuts.push_back(0);
         cuts.push_back(n);
         sort(begin(cuts), end(cuts));
-
-        int m = cuts.size(); // Correct m size
         this->cuts = cuts;
-        dp.resize(m, vector<int>(m, -1));
-
-        return solve(0, m - 1);
+        dp.resize(cuts.size(),vector<int>(cuts.size(),-1));
+        return solve(0,cuts.size()-1);
     }
 };
