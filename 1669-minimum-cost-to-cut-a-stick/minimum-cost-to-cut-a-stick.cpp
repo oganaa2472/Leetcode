@@ -1,23 +1,27 @@
 class Solution {
 public:
-  
-    // Base case: If i is greater than j, there are no cuts to consider.
-    int dp[102][102] = {};
-int dfs(vector<int>& cuts, int i, int j) {
-    if (j - i <= 1)
-        return 0;
-    if (!dp[i][j]) {
-        dp[i][j] = INT_MAX;
-        for (auto k = i + 1; k < j; ++k)
-            dp[i][j] = min(dp[i][j], 
-                cuts[j] - cuts[i] + dfs(cuts, i, k) + dfs(cuts, k, j));
+    vector<vector<int>> dp;
+    vector<int> cuts;
+    int solve(int left,int right){
+        if(dp[left][right]!=-1) return dp[left][right];
+        if(right-left==1) return 0;
+        
+        int ans = INT_MAX;
+        for(int k = left+1;k<right;k++){
+            int cost = solve(left,k) + solve(k,right) + cuts[right]-cuts[left];
+            ans = min(ans,cost);
+        }
+        return dp[left][right] = ans;
+        
     }
-    return dp[i][j];
-}
-int minCost(int n, vector<int>& cuts) {
-    cuts.push_back(0);
-    cuts.push_back(n);
-    sort(begin(cuts), end(cuts));
-    return dfs(cuts, 0, cuts.size() - 1);
-}
+    int minCost(int n, vector<int>& cuts) {
+        int m = n+2;
+       
+        cuts.push_back(0);
+        cuts.push_back(n);
+        sort(cuts.begin(),cuts.end());
+        dp.resize(102,vector<int>(m,-1));
+        this->cuts=cuts;
+        return solve(0,cuts.size()-1);
+    }
 };
