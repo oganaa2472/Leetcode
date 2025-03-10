@@ -1,33 +1,25 @@
 class Solution {
 public:
-       vector<vector<int>> memo;
-    vector<int> newCuts;
-
-    int cost(int left, int right) {
-        if (memo[left][right] != -1) {
-            return memo[left][right];
-        }
-        if (right - left == 1) {
-            return 0;
-        }
-        int ans = INT_MAX;
-        for (int mid = left + 1; mid < right; ++mid) {
-            int currentCost = cost(left, mid) + cost(mid, right) + newCuts[right] - newCuts[left];
-            ans = min(ans, currentCost);
-        }
-        return memo[left][right] = ans;
+  
+    // Base case: If i is greater than j, there are no cuts to consider.
+int dp[102][102] = {};
+vector<int> cuts;
+int dfs(int i, int j) {
+    if (j - i <= 1)
+        return 0;
+    if (!dp[i][j]) {
+        dp[i][j] = INT_MAX;
+        for (auto k = i + 1; k < j; ++k)
+            dp[i][j] = min(dp[i][j], 
+                cuts[j] - cuts[i] + dfs(i, k) + dfs( k, j));
     }
-
-public:
-    int minCost(int n, vector<int>& cuts) {
-        int m = cuts.size();
-        newCuts.resize(m + 2);
-        newCuts[0] = 0;
-        copy(cuts.begin(), cuts.end(), newCuts.begin() + 1);
-        newCuts[m + 1] = n;
-        sort(newCuts.begin(), newCuts.end());
-
-        memo.assign(m + 2, vector<int>(m + 2, -1));
-        return cost(0, newCuts.size() - 1);
-    }
+    return dp[i][j];
+}
+int minCost(int n, vector<int>& cuts) {
+    cuts.push_back(0);
+    cuts.push_back(n);
+    sort(begin(cuts), end(cuts));
+    this->cuts = cuts;
+    return dfs(0, cuts.size() - 1);
+}
 };
