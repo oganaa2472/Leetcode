@@ -18,13 +18,15 @@ public:
         }
         return dp[i][j] = maxBalloons;
     }
+
     int maxCoins(vector<int>& nums) {
-        int n = nums.size();
+         int n = nums.size();
         nums.insert(nums.begin(), 1);
         nums.push_back(1);
         this->nums = nums;
         dp.resize(n+2,vector<int>(n+2,-1));
 
         return solve(1,n);
+
     }
 };
