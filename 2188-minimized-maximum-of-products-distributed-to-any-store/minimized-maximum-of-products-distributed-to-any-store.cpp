@@ -10,6 +10,7 @@ public:
             double sk = double(q[i]/mid);
             int result = (q[i] + mid - 1) / mid;
             // cout<<result<<" ";
+           
             sum += ceil(result);
         }
         cout<<endl;
@@ -34,6 +35,6 @@ public:
                 left = mid+1;
             }
         }
-        return ans;
+        return left;
     }
 };
