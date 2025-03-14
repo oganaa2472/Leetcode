@@ -13,7 +13,7 @@ public:
         return sum>=k;
     }
     int maximumCandies(vector<int>& candies, long long k) {
-        long long right = 1e7;
+        long long right = 10000000;
         
         this->k = k;
         long long left = 1;
