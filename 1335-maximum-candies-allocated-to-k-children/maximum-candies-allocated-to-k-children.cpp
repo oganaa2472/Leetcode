@@ -3,7 +3,7 @@ public:
     
     long long k ;
     bool check(long long mid,vector<int>& c){
-        cout<<mid<<" "<<endl;
+        
         long long sum = 0;
         long long i = 0;
         for(int i = 0;i<c.size();i++){
@@ -13,7 +13,7 @@ public:
         return sum>=k;
     }
     int maximumCandies(vector<int>& candies, long long k) {
-        long long right = *max_element(candies.begin(),candies.end());
+        long long right = 1e7;
         
         this->k = k;
         long long left = 1;
