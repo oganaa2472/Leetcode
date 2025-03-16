@@ -1,41 +1,25 @@
 class Solution {
 public:
-    long repairCars(vector<int>& ranks, int cars) {
-        int minRank = ranks[0], maxRank = ranks[0];
-        // Find min and max rank dynamically
-        for (int rank : ranks) {
-            minRank = min(minRank, rank);
-            maxRank = max(maxRank, rank);
-        }
+    long long repairCars(vector<int>& ranks, int cars) {
+        // The minimum possible time is 1,
+        // and the maximum possible time is when the slowest mechanic (highest
+        // rank) repairs all cars.
+        long long low = 1, high = 1LL * cars * cars * ranks[0];
 
-        // Frequency array to count mechanics with each rank
-        vector<int> freq(maxRank + 1);
-        for (int rank : ranks) {
-            minRank = min(minRank, rank);
-            freq[rank]++;
-        }
-
-        // Minimum possible time, Maximum possible time
-        long long low = 1, high = 1LL * minRank * cars * cars;
-
-        // Perform binary search to find the minimum time required
+        // Perform binary search to find the minimum time required.
         while (low < high) {
-            long long mid = (low + high) / 2;
-            long long carsRepaired = 0;
+            long long mid = low + (high - low) / 2, carsRepaired = 0;
 
-            // Calculate the total number of cars that can be repaired in 'mid'
-            // time
-            for (int rank = 1; rank <= maxRank; rank++) {
-                carsRepaired +=
-                    freq[rank] * (long long)sqrt(mid / (long long)rank);
-            }
+            // Calculate the number of cars that can be repaired in 'mid' time
+            // by all mechanics.
+            for (auto rank : ranks) carsRepaired += sqrt(1.0 * mid / rank);
 
-            // Adjust the search boundaries based on the number of cars repaired
-            if (carsRepaired >= cars) {
-                high = mid;  // Try to find a smaller time
-            } else {
-                low = mid + 1;  // Need more time
-            }
+            // If the total cars repaired is less than required, increase the
+            // time.
+            if (carsRepaired < cars)
+                low = mid + 1;
+            else
+                high = mid;  // Otherwise, try a smaller time.
         }
 
         return low;
