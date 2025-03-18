@@ -1,18 +1,17 @@
 class Solution {
 public:
-    vector<vector<int>> dp;
+
     vector<vector<string>> result;
-    vector<string> current;
     bool isPalindrome(string &s, int start, int end) {
-        if (dp[start][end] != -1) return dp[start][end]; 
+       
         while (start < end) {
-            if (s[start] != s[end])  return dp[start][end] = 0;
+            if (s[start] != s[end])  return false;
             start++, end--;
         }
-        return dp[start][end] = 1;
+        return true;
     }
 
-    void backtrack(string s,int i){
+    void solve(string s,int i,vector<string>& current){
         if(i==s.size()){
             result.push_back(current);
             return;
@@ -20,7 +19,7 @@ public:
         for(int j = i;j<s.size();j++){
             if(isPalindrome(s, i, j)){
                 current.push_back(s.substr(i, j-i + 1));
-                backtrack(s, j + 1);
+                solve(s, j + 1,current);
                 current.pop_back();
             }
         }
@@ -28,8 +27,8 @@ public:
     vector<vector<string>> partition(string s) {
         
         int n = s.size();
-        dp.assign(n, vector<int>(n, -1));
-        backtrack(s, 0);
+        vector<string> current;
+        solve(s,0,current);
         return result;
     }
 };
