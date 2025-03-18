@@ -1,26 +1,38 @@
 class Solution {
 public:
-    bool isMatch(string s, string p) {
-    int m = s.size(), n = p.size();
-    vector<vector<bool>> dp(m + 1, vector<bool>(n + 1, false));
-    dp[0][0] = true;
-    for (int j = 1; j <= n; j++) {
-        if (p[j - 1] == '*') {
-            dp[0][j] = dp[0][j - 1];
+    bool isAllStars(string &S1, int i) {
+        for (int j = 0; j <= i; j++) {
+            if (S1[j] != '*')
+                return false;
         }
+        return true;
     }
-    
-  
-    for (int i = 1; i <= m; i++) {
-        for (int j = 1; j <= n; j++) {
-            if (p[j - 1] == s[i - 1] || p[j - 1] == '?') {
-                dp[i][j] = dp[i - 1][j - 1];
-            } else if (p[j - 1] == '*') {
-                dp[i][j] = dp[i - 1][j] || dp[i][j - 1];
-            }
+
+    bool wildcardMatchingUtil(string &S1, string &S2, int i, int j, vector<vector<int>> &dp) {
+        // Base Cases
+        if (i < 0 && j < 0) return true;  // Both strings are empty
+        if (i < 0 && j >= 0) return false; // Pattern is exhausted, but text remains
+        if (j < 0 && i >= 0) return isAllStars(S1, i); // If pattern is '*', it can match empty string
+
+        // Memoization check
+        if (dp[i][j] != -1) return dp[i][j];
+
+        if (S1[i] == S2[j] || S1[i] == '?') {
+            return dp[i][j] = wildcardMatchingUtil(S1, S2, i - 1, j - 1, dp);
         }
+
+        if (S1[i] == '*') {
+            return dp[i][j] = wildcardMatchingUtil(S1, S2, i - 1, j, dp) || wildcardMatchingUtil(S1, S2, i, j - 1, dp);
+        }
+
+        return dp[i][j] = false;
     }
-    
-    return dp[m][n];
+
+    bool isMatch(string S2, string S1) {
+        int n = S1.size();
+        int m = S2.size();
+
+        vector<vector<int>> dp(n, vector<int>(m, -1)); // Use int instead of bool
+        return wildcardMatchingUtil(S1, S2, n - 1, m - 1, dp);
     }
 };
