@@ -20,8 +20,8 @@ public:
                 res = min(res, solve(1, i + X, max(M, X), piles));
             }
         }
-        dp[even][i][M] = res;
-        return dp[even][i][M];
+        // dp[even][i][M] = res;
+        return dp[even][i][M] = res;
         
     }
     int stoneGameII(vector<int>& piles)
