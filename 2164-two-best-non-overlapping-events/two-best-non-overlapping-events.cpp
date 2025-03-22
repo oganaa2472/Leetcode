@@ -1,44 +1,29 @@
 class Solution {
 public:
-    int n;
-    vector<vector<int>> events;
+    int maxTwoEvents(vector<vector<int>>& events) {
+        int n = events.size();
+        int maxSum = 0,m = 0;
+        vector<pair<int,pair<bool,int>>> timeline;
+        for(auto &e:events){
+            int start = e[0];
+            int end = e[1];
+            int val = e[2];
+            timeline.push_back({start,{true,val}});
+            timeline.push_back({end+1,{false,val}});
+        }
 
-    vector<vector<int>> dp;
-    int upperBound(int i){
-        int l = i+1;
-        int r = events.size()-1;
-        int nextIndex = events.size();
+        sort(timeline.begin(),timeline.end());
 
-        while(l<=r){
-            int mid = l+(r-l)/2;
-            if(events[mid][0]>events[i][1]){
-                nextIndex = mid;
-                r = mid - 1;
+        for(auto t:timeline){
+            bool isStart = t.second.first;
+            int value = t.second.second;
+
+            if(isStart){
+                maxSum = max(maxSum,m+value);
             }else{
-                l= mid+1;
+                m = max(m,value);
             }
         }
-        return nextIndex;
-    }
-    int solve(int i,int k){
-    
-        if(k==2 || i>=n) return 0;
-        if(dp[i][k]!=-1) return dp[i][k];
-
-        int nextIndex = upperBound(i);
-     
-        int inc  =events[i][2] + solve(nextIndex,k+1);
-        int exc = solve(i+1,k);
-        
-        
-
-        return dp[i][k] = max(exc,inc);
-    }
-    int maxTwoEvents(vector<vector<int>>& events) {
-        sort(events.begin(),events.end());
-        n = events.size();
-        this->events = events;
-        dp.resize(n+1,vector<int>(3,-1));
-        return solve(0,0);
+        return maxSum;
     }
 };
