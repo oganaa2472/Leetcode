@@ -4,11 +4,11 @@ public:
         int n = nums.size();
         int ans = 0;
         int bit_max = 31;
-        while (((n - 1) >> bit_max) == 0) {
-            bit_max -= 1;
-        }
+        // while (((n - 1) >> bit_max) == 0) {
+        //     bit_max -= 1;
+        // }
 
-        for (int bit = 0; bit <= bit_max; ++bit) {
+        for (int bit = 0; bit <= 31; ++bit) {
             int x = 0, y = 0;
             for (int i = 0; i < n; ++i) {
                 if ((nums[i] & (1 << bit)) != 0) {
