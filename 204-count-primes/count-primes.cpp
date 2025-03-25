@@ -1,19 +1,25 @@
 class Solution {
 public:
     int countPrimes(int n) {
-        vector<bool> primes(n+1,true);
-        primes[0] = primes[1] = false;
-        int cnt =0;
-        for(int i = 2;i<n;i++){
-            if(primes[i]){
-                 cnt++;
-                for(int j = i*2;j<n;j+=i){
-                    
-                    primes[j] = false;
+       if (n < 3) {
+            return 0;
+        }
+        bool isprime[n];
+
+        memset(isprime, true, n);
+
+        int result = n / 2;
+        for (int i = 3; i * i < n; i += 2) {
+            if (isprime[i]) {
+                int d = i * 2;
+                for (int j = i * i; j < n; j += d) {
+                    if (isprime[j]) {
+                        isprime[j] = false;
+                        result--;
+                    }
                 }
             }
         }
-       
-        return cnt;
+        return result;
     }
 };
