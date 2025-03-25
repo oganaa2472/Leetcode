@@ -15,14 +15,13 @@ public:
 
 
         while(a>=b){
-            long long temp = b, multiple = 1;
+            long long cnt = 0;
             //Бид битыг өндөр рүү шилжүүлэхэд хэд хэдэн удаа хуваах боломжтойг шалгана
-            while(a>=(temp<<1)){
-                temp <<= 1;
-                multiple <<= 1;
+            while(a>=(b<<(cnt+1))){
+               cnt+=1;
             }
-            a -= temp;
-            result += multiple;
+            a -= (b<<cnt);
+            result += 1<<cnt;
         }
         return negative? -result : result;
     }
