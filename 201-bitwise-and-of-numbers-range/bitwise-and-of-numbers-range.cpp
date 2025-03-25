@@ -1,12 +1,10 @@
 class Solution {
 public:
-    int rangeBitwiseAnd(int a, int b) {
-        int shift = 0;
-        while(a<b){
-            a>>=1;// right shift
-            b>>=1;// right shift
-            shift++;
+    int rangeBitwiseAnd(int left, int right) {
+
+        while(left<right){
+            right &= right-1;
         }
-        return (a<<shift);
+        return right;
     }
 };
