@@ -1,51 +1,33 @@
 class Solution {
 public:
-    bool f(int i,vector<int> &nums,int tar,int sum,int k){
+    vector<int> dp;
+    int target;
+    int n ;
+    vector<int> nums;
+    bool solve(int mask,int cur,int k){
+        if(k==0) return true;
+        if(cur==0) return solve(mask,target,k-1);
 
-    if(k==0) return true;
+        if(dp[mask]!=-1) return dp[mask];
 
-    if(sum==tar){
-
-        return f(0,nums,tar,0,k-1);
-
-    }
-
-    if(i>=nums.size()) return false;
-
-    int t=false,nt=false;
-
-    for(int j=i;j<nums.size();j++){
-
-        if(nums[j]==-1) continue;
-
-        if(nums[j]+sum<=tar){
-
-            int ele=nums[j];
-
-            nums[j]=-1;
-
-            t=t||f(j+1,nums,tar,sum+ele,k);
-
-            nums[j]=ele;
-
+        for(int i = 0;i<n;i++){
+            if(!(mask&(1<<i))&&cur-nums[i]>=0){
+                if(solve((mask|(1<<i)),cur-nums[i],k)){
+                    return dp[mask] = true;
+                }
+            }
         }
-
+        return dp[mask] = false;
     }
+    bool canPartitionKSubsets(vector<int>& nums, int k) {
+        int sum = accumulate(nums.begin(),nums.end(),0);
 
-    return t;
+        if(sum%k!=0||nums.size()<k) return false;
+        this->nums=nums;
+        n = nums.size();
+        target = sum/k;
+        dp.resize((1<<n)+5,-1);
 
-}
-
-
-    bool canPartitionKSubsets(vector<int>& arr, int k) {
-        int sum=0;
-
-        for(auto x:arr) sum+=x;
-
-        if(sum%k!=0 || arr.size()<k) return false;
-
-        sort(arr.begin(),arr.end(),greater<int>());
-
-        return f(0,arr,sum/k,0,k);
+        return solve(0,target,k);
     }
 };
