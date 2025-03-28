@@ -1,31 +1,51 @@
 class Solution {
 public:
-    int target;
-    unordered_map<int, bool> dp;
+    bool f(int i,vector<int> &nums,int tar,int sum,int k){
 
-    bool solve(vector<int>& nums, int k, int usedMask, int currentSum, int count) {
-      if(k-1==count) return true;
-      if(dp.count(usedMask)) return dp[usedMask];
+    if(k==0) return true;
 
-      if(currentSum==target){
-        return dp[usedMask] = solve(nums,k,usedMask,0,count+1);
-      }
-      for(int i = 0;i<nums.size();i++){
-        if(!(usedMask & (1 << i))&&currentSum + nums[i] <= target){
-            if(solve(nums,k, usedMask | (1 << i),currentSum + nums[i], count)){
-                return dp[usedMask] = true;
-            }
-        }
-      }
-      return dp[usedMask] = false; 
+    if(sum==tar){
+
+        return f(0,nums,tar,0,k-1);
+
     }
 
-    bool canPartitionKSubsets(vector<int>& nums, int k) {
-        int sum = accumulate(nums.begin(), nums.end(), 0);
-        if (sum % k != 0) return false;
-        target = sum / k;
-      
+    if(i>=nums.size()) return false;
 
-        return solve(nums, k, 0, 0, 0);
+    int t=false,nt=false;
+
+    for(int j=i;j<nums.size();j++){
+
+        if(nums[j]==-1) continue;
+
+        if(nums[j]+sum<=tar){
+
+            int ele=nums[j];
+
+            nums[j]=-1;
+
+            t=t||f(j+1,nums,tar,sum+ele,k);
+
+            nums[j]=ele;
+
+        }
+
+    }
+
+    return t;
+
+}
+
+
+    bool canPartitionKSubsets(vector<int>& arr, int k) {
+        int sum=0;
+
+        for(auto x:arr) sum+=x;
+
+        if(sum%k!=0 || arr.size()<k) return false;
+
+        sort(arr.begin(),arr.end(),greater<int>());
+
+        return f(0,arr,sum/k,0,k);
     }
 };
