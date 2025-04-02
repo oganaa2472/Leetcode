@@ -1,37 +1,26 @@
 class Solution {
 public:
-    bool check(long long mid,vector<int>& time,int k){
-        
-       long long trips = 0;
-        
+    // Can these buses finish 'totalTrips' of trips in 'givenTime'?
+    bool timeEnough(vector<int>& time, long long givenTime, int totalTrips) {
+        long long actualTrips = 0;
         for (int t : time) {
-            trips += mid / t;
-            if (trips >= k) {
-                return true;
-            }
+            actualTrips += givenTime / t;
         }
-        return false;
+        return actualTrips >= totalTrips;
     }
     long long minimumTime(vector<int>& time, int totalTrips) {
-       long long left = 1, right = (long long) *min_element(time.begin(), time.end()) * totalTrips;
-    
-      
-  
-       while (left < right) {
-        long long mid = (left + right) / 2;
-        long long trips = 0;
-        
-        for (int t : time) {
-            trips += mid / t;
-            if (trips >= totalTrips) break; // Хэтэрхий их тооцоолохоос сэргийлэх
+        // Initialize the left and right boundaries.
+        long long left = 1, right = 1LL * *max_element(time.begin(), time.end()) * totalTrips;
+
+        // Binary search to find the minimum time to finish the task.
+        while (left < right) {
+            long long mid = (left + right) / 2;
+            if (timeEnough(time, mid, totalTrips)) {
+                right = mid;
+            } else {
+                left = mid + 1;
+            }
         }
-        
-        if (trips >= totalTrips)
-            right = mid;
-        else
-            left = mid + 1;
-    }
-    
-    return left;
+        return left;
     }
 };
