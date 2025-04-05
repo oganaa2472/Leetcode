@@ -35,6 +35,6 @@ public:
             }
         }
 
-        return solve(0, 1);  // Start assigning from hat 1
+        return solve(0, 0);  // Start assigning from hat 1
     }
 };
