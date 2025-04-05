@@ -14,13 +14,13 @@ public:
         long long right = (long long) *max_element(nums.begin(),nums.end());
 
     
-        while(left<right){
+        while(left<=right){
             long long mid = left+(right-left)/2;
             if(total(mid,cost,nums)>total(mid+1,cost,nums)){
                 left =  mid+1;
                
             }else{
-                right = mid; 
+                right = mid-1; 
             }
         }
         return total(left,cost,nums);
