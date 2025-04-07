@@ -13,9 +13,10 @@ int digit_dp(int pos, int count1, bool tight) {
     int res = 0;
 
     for (int digit = 0; digit <= limit; digit++) {
+
         res += digit_dp(pos + 1, count1 + (digit == 1), tight && (digit == limit));
     }
-
+  
     return dp[pos][count1][tight] = res;
 }
 
