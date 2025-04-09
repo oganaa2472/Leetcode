@@ -7,9 +7,7 @@ public:
             p.push_back({intervals[i][0],i});   
         }
         sort(p.begin(),p.end());
-        for(int i = 0;i<n;i++){
-            cout<<p[i].first<<" "<<p[i].second<<endl;
-        }
+        
         vector<int> result(n,-1);
 
         for(int i = 0;i<n;i++){
