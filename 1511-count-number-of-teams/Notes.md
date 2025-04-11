@@ -1,0 +1,1 @@
+<h2>count-number-of-teams Notes</h2><hr>[ Time taken: 13 m 24 s ]
