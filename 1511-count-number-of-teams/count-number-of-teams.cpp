@@ -1,79 +1,50 @@
 class Solution {
 public:
+    int solve(int i,int k,vector<int>& nums,vector<vector<int>>&dp){
+        int n = nums.size();
+        if(i==n){
+            return 0;
+        }
+        if(k==3) return 1;
+        if(dp[i][k]!=-1) return dp[i][k];
+      
+        int include = 0;
+        for(int cur=i+1;cur<n;cur++){
+            if(nums[cur]>nums[i]){
+                include+=solve(cur,k+1,nums,dp);
+            }
+        }
+        return dp[i][k] = include;
+    }
+    int solve1(int i,int k,vector<int>& nums,vector<vector<int>>&dp){
+        int n = nums.size();
+        if(i==n){
+            return 0;
+        }
+        if(k==3) return 1;
+        if(dp[i][k]!=-1) return dp[i][k];
+      
+        int include = 0;
+        for(int cur=i+1;cur<n;cur++){
+            if(nums[cur]<nums[i]){
+                include+=solve1(cur,k+1,nums,dp);
+            }
+        }
+        return dp[i][k] = include;
+    }
+   
     int numTeams(vector<int>& rating) {
-        int n = rating.size();
-        int teams = 0;
-        vector<vector<int>> increasingCache(n, vector<int>(4, -1));
-        vector<vector<int>> decreasingCache(n, vector<int>(4, -1));
-
-        // Calculate total teams by considering each soldier as a starting point
-        for (int startIndex = 0; startIndex < n; startIndex++) {
-            teams +=
-                countIncreasingTeams(rating, startIndex, 1, increasingCache) +
-                countDecreasingTeams(rating, startIndex, 1, decreasingCache);
-        }
-
-        return teams;
-    }
-
-private:
-    int countIncreasingTeams(const vector<int>& rating, int currentIndex,
-                             int teamSize,
-                             vector<vector<int>>& increasingCache) {
+        // there n soldiers they have unique rating 
+        // we can choose 3 soldiers amongst them under the following rule
         int n = rating.size();
 
-        // Base case: reached end of array
-        if (currentIndex == n) return 0;
-
-        // Base case: found a valid team of size 3
-        if (teamSize == 3) return 1;
-
-        // Return cached result if available
-        if (increasingCache[currentIndex][teamSize] != -1) {
-            return increasingCache[currentIndex][teamSize];
+        int ans = 0;
+        vector<vector<int>> increase(n+1,vector<int>(4,-1));
+        vector<vector<int>> decrease(n+1,vector<int>(4,-1));
+        for(int i = 0;i<n;i++){
+            ans +=solve(i,1,rating,increase)+solve1(i,1,rating,decrease) ;
         }
-
-        int validTeams = 0;
-
-        // Recursively count teams with increasing ratings
-        for (int nextIndex = currentIndex + 1; nextIndex < n; nextIndex++) {
-            if (rating[nextIndex] > rating[currentIndex]) {
-                validTeams += countIncreasingTeams(
-                    rating, nextIndex, teamSize + 1, increasingCache);
-            }
-        }
-
-        // Cache and return the result
-        return increasingCache[currentIndex][teamSize] = validTeams;
-    }
-
-    int countDecreasingTeams(const vector<int>& rating, int currentIndex,
-                             int teamSize,
-                             vector<vector<int>>& decreasingCache) {
-        int n = rating.size();
-
-        // Base case: reached end of array
-        if (currentIndex == n) return 0;
-
-        // Base case: found a valid team of size 3
-        if (teamSize == 3) return 1;
-
-        // Return cached result if available
-        if (decreasingCache[currentIndex][teamSize] != -1) {
-            return decreasingCache[currentIndex][teamSize];
-        }
-
-        int validTeams = 0;
-
-        // Recursively count teams with decreasing ratings
-        for (int nextIndex = currentIndex + 1; nextIndex < n; nextIndex++) {
-            if (rating[nextIndex] < rating[currentIndex]) {
-                validTeams += countDecreasingTeams(
-                    rating, nextIndex, teamSize + 1, decreasingCache);
-            }
-        }
-
-        // Cache and return the result
-        return decreasingCache[currentIndex][teamSize] = validTeams;
+       
+        return ans;
     }
 };
