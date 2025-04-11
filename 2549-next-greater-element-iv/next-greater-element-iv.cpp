@@ -14,14 +14,16 @@ public:
         
         // vector<int> answer(n,-1);
         vector<int> right(n,-1);
-        priority_queue<vector<int>> pq;
+        
+        priority_queue<pair<int, int>, vector<pair<int, int>>, greater<>> pq;
+        // priority_queue<pair<int, int>, vector<pair<int, int>>, greater<>> pq;
         for(int i = 0;i<n;i++){
-            while(pq.size() && -pq.top()[0]<nums[i]){
-                right[pq.top()[1]] = nums[i];
+            while(!pq.empty()&&pq.top().first<nums[i]){
+                right[pq.top().second] = nums[i];
                 pq.pop();
             }
-            for(int &j:mid[i]){
-                pq.push({-nums[j], j});
+            for (int j : mid[i]) {
+                pq.push({nums[j], j});
             }
         }
         return right;
