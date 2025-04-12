@@ -1,39 +1,93 @@
 class Solution {
 public:
+    long long fact[12]={1};
+    long long ans;
+    unordered_map<string,int> vis;
+    string generatePal(int num,int len){
+        string s = to_string(num);
+        string t = s.substr(0,len);
+        reverse(t.begin(),t.end());
+        return s + t;
+    }
+    long long check(string& palindrome){
+        // cout<<palindrome<<endl;
+        long long n = palindrome.size();
+        if(n==1) return 1;
+        vector<long long> p(10,0);
+        for(int i = 0;i<palindrome.size();i++){
+            long long cur = (palindrome[i]-'0');
+            p[cur]++;
+        }
+        string s="";
+        long long sum = fact[n];
+        for(int i = 0;i<p.size();i++){
+            long long cur = p[i];
+            s += (cur+'a');
+        }
+        if(vis.find(s)!=vis.end()) return 0;
+        vis[s]=1;
+        for(int i =0;i<p.size();i++){
+            if(p[i]!=0)
+            sum = (sum / fact[p[i]]);
+        }
+        if(p[0]>0){
+            long long againzero = fact[n-1];
+            p[0]--;
+            for(int i =0;i<p.size();i++){
+                if(p[i]!=0)
+                    againzero = (againzero / fact[p[i]]);
+            }
+            
+            sum = sum - againzero;
+        }
+     
+        return sum;
+    }
+    void find(int index,int num,int len,int k, int odd){
+        if(index==len){
+
+            if(odd==1){
+                len--;
+            }
+            string genPal = generatePal(num,len);
+            long long pal = stoll(genPal);
+            if(pal%k==0){
+                ans = ans + check(genPal);
+            }
+            return;
+        }
+            if(index==0){
+                for(int i = 1;i<=9;i++){
+                    int tnum = num*10+i;
+                    find(index+1,tnum,len,k,odd); 
+                }
+            }else{
+                for(int i = 0;i<=9;i++){
+                   
+                    int tnum = num*10+i;
+                    find(index+1,tnum,len,k,odd); 
+                }
+            }
+        return;
+           
+        
+    }
     long long countGoodIntegers(int n, int k) {
-        unordered_set<string> dict;
-        int base = pow(10, (n - 1) / 2);
-        int skip = n & 1;
-        /* Enumerate the number of palindrome numbers of n digits */
-        for (int i = base; i < base * 10; i++) {
-            string s = to_string(i);
-            s += string(s.rbegin() + skip, s.rend());
-            long long palindromicInteger = stoll(s);
-            /* If the current palindrome number is a k-palindromic integer */
-            if (palindromicInteger % k == 0) {
-                sort(s.begin(), s.end());
-                dict.emplace(s);
-            }
+        ans= 0;
+        fact[1] = 1;
+        vis.clear();
+        for(int i =2;i<=11;i++){
+            fact[i]=fact[i-1]*i;
         }
 
-        vector<long long> factorial(n + 1, 1);
-        long long ans = 0;
-        for (int i = 1; i <= n; i++) {
-            factorial[i] = factorial[i - 1] * i;
+        if(n%2==0) {
+            find(0,0,n/2,k,0);
         }
-        for (const string &s : dict) {
-            vector<int> cnt(10);
-            for (char c : s) {
-                cnt[c - '0']++;
-            }
-            /* Calculate permutations and combinations */
-            long long tot = (n - cnt[0]) * factorial[n - 1];
-            for (int x : cnt) {
-                tot /= factorial[x];
-            }
-            ans += tot;
+        else {
+            // len = n/2+1;
+            find(0,0,n/2+1,k,1);
         }
-
+        
         return ans;
     }
 };
