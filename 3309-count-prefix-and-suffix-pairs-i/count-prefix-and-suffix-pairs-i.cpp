@@ -1,27 +1,59 @@
+struct Node{
+    Node* links[26];
+    int cntEndWith = 0;
+    int cntEndPrefix = 0;
+    bool containKey(char ch){
+        return (links[ch-'a']!=NULL);
+    }
+    Node* get(char ch){
+        return links[ch-'a'];
+    }
+    void put(char ch,Node* node){
+        links[ch-'a'] = node;
+    }
+    void increaseEnd(){
+        cntEndWith++;
+    }
+    void increasePrefix(){
+        cntEndPrefix++;
+    }
+    void decreaseEnd(){
+        cntEndWith--;
+    }
+    void decreasePrefix(){
+        cntEndPrefix--;
+    }
+    int getEnd(){
+        return cntEndWith;
+    }
+    int getPrefix(){
+        return cntEndPrefix;
+    }
+};
 class Solution {
 public:
     int countPrefixSuffixPairs(vector<string>& words) {
-        int n = words.size();
+        Node* root = new Node();
+       
         int count = 0;
-
-        // Step 1: Iterate through each pair of words
-        for (int i = 0; i < n; ++i) {
-            for (int j = i + 1; j < n; ++j) {
-                string& str1 = words[i];
-                string& str2 = words[j];
-
-                // Step 2: Skip if the first string is larger than the second
-                if (str1.size() > str2.size()) continue;
-
-                // Step 3: Check if str1 is both the prefix and suffix of str2
-                if (str2.find(str1) == 0 &&
-                    str2.rfind(str1) == str2.size() - str1.size()) {
-                    ++count;
+        for(string& s : words){
+            Node* node = root;
+            int n = s.size();
+            for(int i = 0;i<n;i++){
+                
+                if(!node->containKey(s[i])){
+                    node->put(s[i],new Node());
                 }
-            }
+                node = node->get(s[i]);
+                if(!node->containKey(s[n-1-i])){
+                    node->put(s[n-i-1],new Node());
+                }
+                node = node->get(s[n-i-1]);
+                count+=node->getPrefix();
+            }   
+            node->increasePrefix();
+            
         }
-
-        // Step 4: Return the total count of prefix-suffix pairs
         return count;
     }
 };
