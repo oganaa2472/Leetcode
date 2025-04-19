@@ -16,7 +16,7 @@ public:
         
     
         long long cnt = 0;
-        for(int n = 52;n>=1;n--){
+        for(int n = 1;n<=52;n++){
 
         
             if(n%x==0)// current x position
