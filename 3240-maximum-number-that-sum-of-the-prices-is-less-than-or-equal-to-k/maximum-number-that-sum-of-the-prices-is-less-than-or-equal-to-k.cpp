@@ -14,15 +14,14 @@ public:
     bool check(long long k, int x, long long mid) {
     
         
-        long long n = countBits(mid);
-      
-        
+    
         long long cnt = 0;
+        for(int n = 52;n>=1;n--){
+
         
-        while(n){
             if(n%x==0)// current x position
                 cnt += (mid / powerOf2(n)) * (powerOf2(n - 1)) + max(0LL, (mid % powerOf2(n)) - powerOf2(n - 1));
-            n--;
+       
         }
   
 
