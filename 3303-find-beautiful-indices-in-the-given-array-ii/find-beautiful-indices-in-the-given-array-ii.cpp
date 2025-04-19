@@ -1,60 +1,41 @@
 class Solution {
 public:
-   const int P = 31;            // Prime base
-const int MOD = 1e9 + 9;     // Large prime modulus
+    const long long P = 31, M = 1e9 + 9;
+    vector<int> findMatch(const string& s, const string& t) {
+        // base case
+        if (s.size() < t.size()) return {};
 
-vector<int> rabinKarp(string const& text, string const& pattern) {
-int n = text.size(), m = pattern.size();
-long long p_pow = 1;
-long long pattern_hash = 0;
+        // pre-compute powers
+        vector<long long> p(s.size());
+        p[0] = 1LL;
+        for (int i = 1; i < s.size(); i++) p[i] = (p[i - 1] * P) % M;
 
-// Calculate hash of pattern
-for (char c : pattern) {
-    pattern_hash = (pattern_hash + (c - 'a' + 1) * p_pow) % MOD;
-    p_pow = (p_pow * P) % MOD;
-}
+        // calculate the hash value for the string `t`
+        long long hash_t = 0LL;
+        for (int i = 0; i < t.size(); i++) hash_t = (hash_t + (t[i] - 'a') * p[i]) % M;
 
-vector<long long> prefix_hash(n + 1, 0);
-p_pow = 1;
+        // calculate the prefix hash values for the string `s`
+        vector<long long> hash_s(s.size() + 1, 0);
+        for (int i = 0; i < s.size(); i++) hash_s[i + 1] = (hash_s[i] + (s[i] - 'a') * p[i]) % M;
 
-// Prefix hash for text
-for (int i = 0; i < n; i++) {
-    prefix_hash[i + 1] = (prefix_hash[i] + (text[i] - 'a' + 1) * p_pow) % MOD;
-    p_pow = (p_pow * P) % MOD;
-}
-
-vector<int> result;
-
-p_pow = 1;
-for (int i = 0; i + m <= n; i++) {
-    long long current_hash = (prefix_hash[i + m] - prefix_hash[i] + MOD) % MOD;
-    long long hash_pattern_scaled = (pattern_hash * p_pow) % MOD;
-    if (current_hash == hash_pattern_scaled) {
-        result.push_back(i);
-    }
-    p_pow = (p_pow * P) % MOD;
-}
-
-return result;
-}
-    vector<int> beautifulIndices(string s, string a, string b, int k) {
-        vector<int> rabinA = rabinKarp(s,a);
-        vector<int> rabinB =  rabinKarp(s,b);
-        int n = s.size(), m = a.size();
-
-
-        vector<int> answer;
-        int b_ind = 0;
-        int b_size = rabinB.size();
-        for(auto a_ind :rabinA ){
-            auto l = lower_bound(rabinB.begin(),rabinB.end(),a_ind-k)- rabinB.begin();
-            auto r = upper_bound(rabinB.begin(),rabinB.end(),a_ind+k) - rabinB.begin()-1;
-            if(r-l+1>0) answer.push_back(a_ind);
-            
+        // find the indices in `s` that contain string `t`
+        vector<int> indices;
+        for (int i = 0; (i + t.size()) <= s.size(); i++) {
+            long long hash = (hash_s[i + t.size()] + M - hash_s[i]) % M;
+            if (hash == ((hash_t * p[i]) % M)) indices.push_back(i);
         }
-       
-        
-       
-        return answer;
+        return indices;
+    }
+    vector<int> beautifulIndices(string s, string a, string b, int k) {
+        vector<int> matchA = findMatch(s, a);
+        vector<int> matchB = findMatch(s, b);
+
+        // find the index [i, j] meets the conditions using binary search
+        vector<int> result;
+        for (auto& i : matchA) {
+            auto it = lower_bound(matchB.begin(), matchB.end(), i - k);
+            if ((it != matchB.end()) && (abs(*it - i) <= k)) result.push_back(i);
+        }
+        return result;
     }
 };
