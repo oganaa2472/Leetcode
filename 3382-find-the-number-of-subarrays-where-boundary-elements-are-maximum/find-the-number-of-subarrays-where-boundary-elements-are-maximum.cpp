@@ -50,7 +50,7 @@ public:
             int right = nextGreater[i] - 1;
        
             count+= query(nums[i],left,right);
-            indicesMap[nums[i]].erase(indicesMap[nums[i]].begin());
+            // indicesMap[nums[i]].erase(indicesMap[nums[i]].begin());
         }
         return count;
     //     int n = nums.size();
