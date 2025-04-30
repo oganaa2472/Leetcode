@@ -1,33 +1,41 @@
 class Solution {
 public:
-    int findKthLargest(vector<int>& S, int k) {
-         if (S.size() == 1) return S[0];
+    int findKthLargest(vector<int>& nums, int k) {
+     
+        int n = nums.size();
+        return quickSelect(nums, 0, n - 1, n - k);
+    }
 
-        // Step 1: Pick a random pivot
+    int quickSelect(vector<int>& nums, int left, int right, int k_smallest) {
+        if (left == right) return nums[left];  
+
+       
         srand(time(0));
-        int pivot = S[rand() % S.size()];
-        vector<int> L, E, G;
-        // L is my smallest elements
-        // E is pivot 
-        // G is my biggest elements
-        for (int num : S) {
-            if (num < pivot) L.push_back(num);
-            else if (num == pivot) E.push_back(num);
-            else G.push_back(num);
-        }
-        if (k <= G.size()) {
-            return findKthLargest(G, k);
-        } else if (k <= G.size() + E.size()) {
-            return pivot; // kth biggest is in E
+        int pivot_index = left + rand() % (right - left + 1);
+        pivot_index = partition(nums, left, right, pivot_index);
+
+        if (k_smallest == pivot_index) {
+            return nums[k_smallest];
+        } else if (k_smallest < pivot_index) {
+            return quickSelect(nums, left, pivot_index - 1, k_smallest);
         } else {
-            return findKthLargest(L, k - G.size() - E.size());
+            return quickSelect(nums, pivot_index + 1, right, k_smallest);
         }
-    //      if (k <= L.size()) {
-    //     return quickSelect(L, k);
-    // } else if (k <= L.size() + E.size()) {
-    //     return pivot; // kth smallest is in E
-    // } else {
-    //     return quickSelect(G, k - L.size() - E.size());
-    // }
-}
+    }
+
+    int partition(vector<int>& nums, int left, int right, int pivot_index) {
+        int pivot_value = nums[pivot_index];
+        swap(nums[pivot_index], nums[right]); // Move pivot to end
+        int store_index = left;
+
+        for (int i = left; i < right; ++i) {
+            if (nums[i] < pivot_value) {
+                swap(nums[store_index], nums[i]);
+                store_index++;
+            }
+        }
+
+        swap(nums[right], nums[store_index]); // Move pivot to final place
+        return store_index;
+    }
 };
