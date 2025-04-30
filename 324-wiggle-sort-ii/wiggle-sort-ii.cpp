@@ -43,8 +43,8 @@ public:
         vector<int> arr(n,0);
         int j = 0;
         for (int i = n - 1; i >= n / 2; --i) {
-        if (j < n) arr[j] = nums[i - n/2];  // left side (optional if you need)
-        if (j + 1 < n) arr[j + 1] = nums[i];  // right side
+        if (j < n) arr[j] = nums[i - n/2];  
+        if (j + 1 < n) arr[j + 1] = nums[i]; 
             j += 2;
         }
 
