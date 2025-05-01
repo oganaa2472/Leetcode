@@ -17,9 +17,7 @@ public:
                 }
             }
         }
-
-        
-        while (!q.empty()) {
+        while(!q.empty()){
             int cx = q.front().first;
             int cy = q.front().second;
             q.pop();
@@ -37,7 +35,10 @@ public:
                 }
             }
         }
+        return answer;
 
+        
+       
         return answer;
     }
 };
