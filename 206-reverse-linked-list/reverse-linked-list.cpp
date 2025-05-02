@@ -10,27 +10,14 @@
  */
 class Solution {
 public:
-
-    void reverse(ListNode* head){
-        if(head==NULL){
-            return;
-        }else{
-            // ListNode* last = removeLastNode(head);
-            // answer=last;
-
-            
-            
-            // ListNode* t = a;
-
-
-            
-            reverse(head->next);
-        }
-    }
-    
     ListNode* reverseList(ListNode* head) {
-        ListNode* prev=NULL;
+        //   ListNode* temp = t;
+        //     t = t->next;
+        //     temp->next = prev;
+        //     prev = temp;
+        ListNode* prev = NULL;
         ListNode* t = head;
+
         while(t!=NULL){
             ListNode* temp = t;
             t = t->next;
@@ -38,6 +25,6 @@ public:
             prev = temp;
         }
         head = prev;
-        return head;
+        return prev;
     }
 };
