@@ -1,74 +1,76 @@
-class Node {
-public:
-    int key;
-    int data;
-    Node* next;
-    Node* prev;
-    
-    Node(int key, int val) {
-        this->key = key;
-        this->data = val;
-        next = nullptr;
-        prev = nullptr;
-    }
+class Node{
+    public:
+        int val;
+        int key;
+        Node* next;
+        Node* prev;
+        Node(int k,int v){
+            key = k;
+            val = v;
+            next = nullptr;
+            prev = nullptr;
+        }
 };
-
 class LRUCache {
 public:
-    unordered_map<int, Node*> lru;
+    Node* head;
+    Node* tail;
+    unordered_map<int,Node*> cache; 
     int capacity;
-    Node* left;  // dummy head
-    Node* right; // dummy tail
-
     LRUCache(int capacity) {
         this->capacity = capacity;
-        left = new Node(0, 0);
-        right = new Node(0, 0);
-        left->next = right;
-        right->prev = left;
+        head = new Node(0,0);
+        tail = new Node(0,0);
+        head->next = tail;
+        tail->prev = head;
     }
 
-    // Remove a node from the list
-    void remove(Node* node) {
+    void remove(Node* node){
         Node* prev = node->prev;
         Node* next = node->next;
         prev->next = next;
         next->prev = prev;
+       
     }
-
-    // Insert node before right (most recent)
-    void insert(Node* node) {
-        Node* prev = right->prev;
+    void add(Node* node){
+        Node* prev = tail->prev;
         prev->next = node;
-        node->prev = prev;
-        node->next = right;
-        right->prev = node;
+        node->prev = prev; 
+        node->next = tail;
+        tail->prev = node;
     }
-
     int get(int key) {
-        if (lru.count(key)) {
-            Node* node = lru[key];
-            remove(node);
-            insert(node);
-            return node->data;
+        if(cache.count(key)){
+            Node* cur = cache[key];
+            remove(cur);
+            add(cur);
+            return cur->val;
         }
         return -1;
     }
-
+    
     void put(int key, int value) {
-        if (lru.count(key)) {
-            remove(lru[key]);
-            delete lru[key];
+       
+        if(cache.count(key)){
+            Node* cur = cache[key]; 
+            remove(cur);
+            delete cache[key];
         }
-        Node* newNode = new Node(key, value);
-        lru[key] = newNode;
-        insert(newNode);
-
-        if (lru.size() > capacity) {
-            Node* least = left->next;
-            remove(least);
-            lru.erase(least->key);
-            delete least;
+        Node* node = new Node(key,value);
+        add(node);
+        cache[key] = node;
+        if(capacity<cache.size()){
+            Node* lst = head->next;
+            cache.erase(lst->key);
+            remove(lst);
+            delete lst;
         }
     }
 };
+
+/**
+ * Your LRUCache object will be instantiated and called as such:
+ * LRUCache* obj = new LRUCache(capacity);
+ * int param_1 = obj->get(key);
+ * obj->put(key,value);
+ */
