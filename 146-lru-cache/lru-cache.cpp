@@ -54,7 +54,7 @@ public:
         if(cache.count(key)){
             Node* cur = cache[key]; 
             remove(cur);
-            delete cache[key];
+            // delete cache[key];
         }
         Node* node = new Node(key,value);
         add(node);
@@ -63,7 +63,7 @@ public:
             Node* lst = head->next;
             cache.erase(lst->key);
             remove(lst);
-            delete lst;
+            // delete lst;
         }
     }
 };
