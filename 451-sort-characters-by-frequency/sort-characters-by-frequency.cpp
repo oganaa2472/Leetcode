@@ -2,25 +2,20 @@ class Solution {
 public:
     string frequencySort(string s) {
         unordered_map<char,int> mp;
-        
-        
         for(int i = 0;i<s.size();i++){
             mp[s[i]]++;
         }
-        // sort(word.begin(),word.end());
-        // string need="";
-        
-        vector<pair<int,char>> v;
-        
+        priority_queue<pair<int,char>> pq;
         for(auto it:mp){
-            v.push_back({it.second,it.first});
+            pq.push({it.second,it.first});
         }
         
-        sort(v.begin(), v.end(), greater<pair<int, char>>());
-       
+        cout<<pq.top().first;
         string ans = "";
-        for(auto i: v){
+        while(!pq.empty()){
+            pair<int,char> i = pq.top();
             while(i.first--) ans += i.second;
+            pq.pop();
         }
         return ans;
     }
