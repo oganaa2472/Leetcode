@@ -1,38 +1,26 @@
-#include <iostream>
-#include <vector>
-#include <map>
-#include <unordered_map>
-#include <algorithm>
-#include <iterator> // Required for std::prev
-
 class Solution {
 public:
-    long long maximumTotalDamage(std::vector<int>& power) {
-        std::unordered_map<int, long long> sum;
+    long long maximumTotalDamage(vector<int>& power) {
+        unordered_map<int,long long> sum;
+        vector<long long> unique;
         for (int p : power) {
             sum[p] += p;
         }
-        vector<long long> unique_powers;
-        for (auto const& [p, total_damage] : sum) {
-            unique_powers.push_back(p);
-        }
-        sort(unique_powers.begin(), unique_powers.end());
-
-        
-        map<long long, long long> dp;
-
        
-        if (unique_powers.empty()) {
-            return 0; 
+        for (auto const& [p, total_damage] : sum) {
+            unique.push_back(p);
         }
-
-        
-        dp[unique_powers[0]] = sum[unique_powers[0]];
-        for (int i = 1; i < unique_powers.size(); ++i) {
-            long long current_power = unique_powers[i];
+     
+        if(unique.empty()) return 0;
+        sort(unique.begin(),unique.end());
+        int n = unique.size();
+        map<long long,long long> dp;
+        dp[unique[0]] = sum[unique[0]];
+        for (int i = 1; i < unique.size(); ++i) {
+            long long current_power = unique[i];
             long long current_sum = sum[current_power];
 
-            long long prev_power = unique_powers[i-1];
+            long long prev_power = unique[i-1];
             long long max_damage_without_cur = dp[prev_power];
 
        
@@ -51,8 +39,6 @@ public:
          
             dp[current_power] = max(max_damage_without_cur, max_damage_with_cur);
         }
-
-     
-        return dp[unique_powers.back()];
+        return dp[unique.back()];
     }
 };
