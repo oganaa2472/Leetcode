@@ -24,7 +24,7 @@ public:
         int pivot = partition(nums, left, right,largest);
         if (largest == pivot) {
             return nums[largest];
-        } else if (largest < pivot) {
+        } else if (largest <= pivot) {
             return quickSelect(nums, left, pivot - 1, largest);
         } else {
             return quickSelect(nums, pivot + 1, right, largest);
