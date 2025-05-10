@@ -44,8 +44,8 @@ class List{
 class LFUCache {
 public:
 
-    map<int,Node*> cache;
-    map<int,List*> freqList;
+    unordered_map<int,Node*> cache;
+    unordered_map<int,List*> freqList;
     int curSize = 0;
     int minFreq;
     int capacity;
