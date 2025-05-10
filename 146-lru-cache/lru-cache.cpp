@@ -1,76 +1,40 @@
-class Node{
-    public:
-        int val;
-        int key;
-        Node* next;
-        Node* prev;
-        Node(int k,int v){
-            key = k;
-            val = v;
-            next = nullptr;
-            prev = nullptr;
-        }
-};
 class LRUCache {
-public:
-    Node* head;
-    Node* tail;
-    unordered_map<int,Node*> cache; 
+private:
     int capacity;
-    LRUCache(int capacity) {
-        this->capacity = capacity;
-        head = new Node(0,0);
-        tail = new Node(0,0);
-        head->next = tail;
-        tail->prev = head;
+    list<pair<int, int>> lruList; // Stores (key, value)
+    unordered_map<int, list<pair<int, int>>::iterator> cache; // key -> node
+
+public:
+    LRUCache(int cap) {
+        capacity = cap;
     }
 
-    void remove(Node* node){
-        Node* prev = node->prev;
-        Node* next = node->next;
-        prev->next = next;
-        next->prev = prev;
-       
-    }
-    void add(Node* node){
-        Node* prev = tail->prev;
-        prev->next = node;
-        node->prev = prev; 
-        node->next = tail;
-        tail->prev = node;
-    }
     int get(int key) {
-        if(cache.count(key)){
-            Node* cur = cache[key];
-            remove(cur);
-            add(cur);
-            return cur->val;
-        }
-        return -1;
+        if (cache.find(key) == cache.end()) return -1;
+
+        // Move the accessed node to front
+        auto node = cache[key];
+        int val = node->second;
+        lruList.erase(node);
+        lruList.push_front({key, val});
+        cache[key] = lruList.begin();
+        return val;
     }
-    
+
     void put(int key, int value) {
-       
-        if(cache.count(key)){
-            Node* cur = cache[key]; 
-            remove(cur);
-            // delete cache[key];
+        // Key already exists: remove old
+        if (cache.find(key) != cache.end()) {
+            lruList.erase(cache[key]);
         }
-        Node* node = new Node(key,value);
-        add(node);
-        cache[key] = node;
-        if(capacity<cache.size()){
-            Node* lst = head->next;
-            cache.erase(lst->key);
-            remove(lst);
-            // delete lst;
+        // Cache full: remove LRU
+        else if (lruList.size() == capacity) {
+            int lruKey = lruList.back().first;
+            lruList.pop_back();
+            cache.erase(lruKey);
         }
+
+        // Insert new (key, value) at front
+        lruList.push_front({key, value});
+        cache[key] = lruList.begin();
     }
 };
-
-/**
- * Your LRUCache object will be instantiated and called as such:
- * LRUCache* obj = new LRUCache(capacity);
- * int param_1 = obj->get(key);
- * obj->put(key,value);
- */
