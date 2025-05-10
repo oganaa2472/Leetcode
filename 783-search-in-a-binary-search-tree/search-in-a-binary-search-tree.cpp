@@ -25,7 +25,12 @@ public:
         return NULL;
     }
     TreeNode* searchBST(TreeNode* root, int val) {
-        TreeNode* node = findElement(root,val);
-        return node;
+        if(root == NULL) return NULL;
+        if(root->val==val) return root;
+        else if(root->val>val) return searchBST(root->left,val);
+        else {
+            return searchBST(root->right,val);
+        }
+        return root;
     }
 };
