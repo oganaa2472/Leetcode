@@ -18,13 +18,13 @@ public:
         priority_queue<pair<int, int>, vector<pair<int, int>>, greater<>> pq;
         // priority_queue<pair<int, int>, vector<pair<int, int>>, greater<>> pq;
         for(int i = 0;i<n;i++){
-            while(!pq.empty()&&pq.top().first<nums[i]){
+           while(!pq.empty()&&pq.top().first<nums[i]){
                 right[pq.top().second] = nums[i];
                 pq.pop();
-            }
-            for (int j : mid[i]) {
-                pq.push({nums[j], j});
-            }
+           }
+           for(auto j:mid[i]){
+            pq.push({nums[j],j});
+           }
         }
         return right;
     }
