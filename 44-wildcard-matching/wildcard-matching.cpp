@@ -1,38 +1,34 @@
 class Solution {
 public:
-    bool isAllStars(string &S1, int i) {
-        for (int j = 0; j <= i; j++) {
-            if (S1[j] != '*')
-                return false;
+    string s, p;
+
+    bool isAllStars(int j) {
+        for (int k = 1; k <= j; k++) {
+            if (p[k - 1] != '*') return false;
         }
         return true;
     }
 
-    bool wildcardMatchingUtil(string &S1, string &S2, int i, int j, vector<vector<int>> &dp) {
-        // Base Cases
-        if (i < 0 && j < 0) return true;  // Both strings are empty
-        if (i < 0 && j >= 0) return false; // Pattern is exhausted, but text remains
-        if (j < 0 && i >= 0) return isAllStars(S1, i); // If pattern is '*', it can match empty string
-
-        // Memoization check
+    bool solve(int i, int j, vector<vector<int>>& dp) {
+        if (i == 0 && j == 0) return true;
+        if (j == 0 && i > 0) return false;
+        if (i == 0 && j > 0) return isAllStars(j);
         if (dp[i][j] != -1) return dp[i][j];
 
-        if (S1[i] == S2[j] || S1[i] == '?') {
-            return dp[i][j] = wildcardMatchingUtil(S1, S2, i - 1, j - 1, dp);
+        if (s[i - 1] == p[j - 1] || p[j - 1] == '?') {
+            return dp[i][j] = solve(i - 1, j - 1, dp);
         }
-
-        if (S1[i] == '*') {
-            return dp[i][j] = wildcardMatchingUtil(S1, S2, i - 1, j, dp) || wildcardMatchingUtil(S1, S2, i, j - 1, dp);
+        if (p[j - 1] == '*') {
+            return dp[i][j] = solve(i - 1, j, dp) || solve(i, j - 1, dp);
         }
-
         return dp[i][j] = false;
     }
 
-    bool isMatch(string S2, string S1) {
-        int n = S1.size();
-        int m = S2.size();
-
-        vector<vector<int>> dp(n, vector<int>(m, -1)); // Use int instead of bool
-        return wildcardMatchingUtil(S1, S2, n - 1, m - 1, dp);
+    bool isMatch(string s, string p) {
+        this->s = s;
+        this->p = p;
+        int n = s.size(), m = p.size();
+        vector<vector<int>> dp(n + 1, vector<int>(m + 1, -1));
+        return solve(n, m, dp);
     }
 };
