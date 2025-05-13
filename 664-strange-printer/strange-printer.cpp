@@ -1,25 +1,18 @@
 class Solution {
 public:
-
-    vector<vector<int>> dp;
-    int n ;
-    string s;
-    int solve(int i,int j){
+    int solve(int i,int j,vector<vector<int>>&dp, string& s){
         if(i==j) return 1;
         if(dp[i][j]!=-1) return dp[i][j];
-        int minNum = INT_MAX;
-        for(int k = i ;k<j;k++){
-            int print = solve(i,k)+solve(k+1,j);
-            minNum = min(minNum,print);
+        int min_ans=INT_MAX;
+        for(int k = i;k<j;k++){
+            int p = solve(i,k,dp,s)+solve(k+1,j,dp,s);
+            min_ans = min(min_ans,p);
         }
-
-        return dp[i][j] = s[i]==s[j] ? minNum-1:minNum;
+        return dp[i][j] = s[i]==s[j] ? min_ans-1:min_ans;
     }
     int strangePrinter(string s) {
-        this->s = s;
-        n = s.size();
-        dp.resize(n+1,vector<int>(n+1,-1));
-
-        return solve(0,n-1);
+        int n = s.size();
+        vector<vector<int>> dp(n+1,vector<int>(n+1,-1));
+        return solve(0,n-1,dp,s);
     }
 };
