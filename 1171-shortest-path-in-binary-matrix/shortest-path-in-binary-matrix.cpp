@@ -1,37 +1,43 @@
+#include <vector>
+#include <queue>
+#include <climits>
+using namespace std;
+
 class Solution {
 public:
     int shortestPathBinaryMatrix(vector<vector<int>>& grid) {
         int n = grid.size();
-        queue<pair<pair<int,int>,int>>q;
-        q.push({{0,0},1});
-        if(grid[0][0]==1)return -1;
-        
-        if(grid[0][0]==0 && grid.size()==1 && grid[0].size()==1)return 1;
-        vector<vector<bool>>visited(grid.size(),vector<bool>(grid.size(),false));
+        vector<vector<int>> dis(n, vector<int>(n, INT_MAX));
 
-        while(!q.empty()){
-            pair<int,int> p = q.front().first; 
-            int x = p.first;
-            int y = p.second;
-            int lengthOfPath = q.front().second; 
-            q.pop();
-            vector<pair<int,int>> neighbours ={{0,1}, {0,-1}, {1,0}, {-1,0},
-                                               {1,1}, {-1,-1}, {1,-1}, {-1,1}};
+        if (grid[0][0] != 0) return -1;
 
+        priority_queue<vector<int>, vector<vector<int>>, greater<vector<int>>> pq;
+        pq.push({1, 0, 0});
 
-            for(pair<int,int>neighbour: neighbours){
-                int newx = neighbour.first + x;
-                int newy = neighbour.second+ y;
-                if(newx>=0 && newy>=0 && newx<grid.size() && newy<grid[0].size() && grid[newx][newy]==0 && !visited[newx][newy]){
+        vector<pair<int, int>> directions = {
+            {1, 0}, {-1, 0}, {0, 1}, {0, -1},
+            {1, 1}, {-1, -1}, {1, -1}, {-1, 1}
+        };
 
-                    q.push({{newx,newy},lengthOfPath+1});
-                    visited[newx][newy] = true;
-                    if(newx==grid.size()-1 && newy==grid[0].size()-1)
-                        return lengthOfPath+1;
+        while (!pq.empty()) {
+            vector<int> d = pq.top();
+            int dist = d[0];
+            int x = d[1];
+            int y = d[2];
+            pq.pop();
+
+            if (x == n - 1 && y == n - 1) return dist;
+
+            for (auto [dx, dy] : directions) {
+                int nx = x + dx, ny = y + dy;
+
+                if (nx >= 0 && ny >= 0 && nx < n && ny < n && grid[nx][ny] == 0 && dist + 1 < dis[nx][ny]) {
+                    dis[nx][ny] = dist + 1;
+                    pq.push({dist + 1, nx, ny});
                 }
             }
-            
         }
+
         return -1;
     }
 };
