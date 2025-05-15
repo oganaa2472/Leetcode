@@ -28,7 +28,7 @@ public:
         }
         int mx = 0;
         for(int i = 1;i<=n;i++){
-            cout<<dist[i]<<" ";
+         
             if(dist[i]==INT_MAX){
                 return -1;
             }else{
