@@ -1,40 +1,41 @@
 class Solution {
 public:
+    vector<int> height;
+    vector<int> parent;
+    int find_set(int v) {
+        if (v == parent[v])
+            return v;
+        return parent[v] = find_set(parent[v]);
+    }
+    void unionFind(int a,int b){
+        
+        if (height[a] < height[b])
+            swap(a, b);
+        parent[b] = a;
+        if (height[a] == height[b])
+        height[a]++;
+        
+    }
+
+
     vector<int> findRedundantConnection(vector<vector<int>>& edges) {
         int n = edges.size();
-        vector<int> par(n + 1), rank(n + 1, 1);
-        for (int i = 0; i <= n; ++i)
-            par[i] = i;
-
-        for (const auto& edge : edges) {
-            if (!Union(par, rank, edge[0], edge[1]))
-                return vector<int>{ edge[0], edge[1] };
+        parent.resize(n+1,0);
+        height.resize(n+1,0);
+        for(int i=1;i<=n;i++){
+            parent[i] = i;
+        }
+        for(int i = 0;i<edges.size();i++){
+             int a = find_set(edges[i][0]);
+             int b = find_set(edges[i][1]);
+             if(a==b){
+                return {edges[i][0],edges[i][1]};
+             }
+             unionFind(a,b);
         }
         return {};
-    }
 
-private:
-    int Find(vector<int>& par, int n) {
-        int p = par[n];
-        while (p != par[p]) {
-            par[p] = par[par[p]];
-            p = par[p];
-        }
-        return p;
     }
+ 
 
-    bool Union(vector<int>& par, vector<int>& rank, int n1, int n2) {
-        int p1 = Find(par, n1);
-        int p2 = Find(par, n2);
-        if (p1 == p2)
-            return false;
-        if (rank[p1] > rank[p2]) {
-            par[p2] = p1;
-            rank[p1] += rank[p2];
-        } else {
-            par[p1] = p2;
-            rank[p2] += rank[p1];
-        }
-        return true;
-    }
 };
