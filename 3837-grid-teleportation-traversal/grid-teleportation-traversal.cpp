@@ -22,7 +22,7 @@ public:
 
         // 3. BFS эхлүүлэх (Start BFS)
         // Queue stores {row, col, steps}
-         using T = tuple<int,int,int>;
+        using T = tuple<int,int,int>;
         priority_queue<T,vector<T>,greater<T>> q;
 
         // Use a 2D array to store the minimum steps to reach a cell.
@@ -31,7 +31,7 @@ public:
 
         // Keep track of used portal letters. Once a letter is in this set,
         // its teleportation ability cannot be used again.
-        vector<bool>used(26,false);
+        unordered_set<char> usedPortals;
 
         // Start BFS from (0, 0) with 0 steps
         q.push({0, 0, 0});
@@ -41,7 +41,6 @@ public:
         int dirs[4][2] = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
         // it looks like shortest path dp plus bfs 
         // BFS loop
-         unordered_map<char,vector<pair<int,int>>>mp;
         while (!q.empty()) {
             auto [steps,x, y] = q.top();
             q.pop();
@@ -55,7 +54,7 @@ public:
 
             // If we reached the destination, return the steps
             if (x == m - 1 && y == n - 1) {
-              return steps;
+                return steps;
             }
 
             // 4. Зэргэлдээ 4 чиглэлд явна (Move in 4 adjacent directions)
@@ -75,13 +74,12 @@ public:
 
             // 5. Хэрвээ портал бол (If it's a portal)
             char ch = voracelium[x][y];
-            if (ch >= 'A' && ch <= 'Z'&&!used[ch-'A']) {
-                    used[ch-'A']=true;
+            if (ch >= 'A' && ch <= 'Z') {
                  // Check if this portal letter has NOT been used for teleportation before
-                
+                 if (usedPortals.find(ch) == usedPortals.end()) {
                      // Mark this portal letter as used. Its teleportation ability
                      // is now globally unavailable for subsequent steps.
-                    //  usedPortals.insert(ch);
+                     usedPortals.insert(ch);
 
                      // Teleport to all locations of this portal type
                      for (auto& [px, py] : portalMap[ch]) {
@@ -93,14 +91,15 @@ public:
                              q.push({steps,px, py});
                          }
                      }
-                    // usedPortals.erase(ch);
-                 
+                 }
             }
         }
 
         // If the destination (m-1, n-1) was never reached (min_steps is still infinity)
-       
+        if (min_steps[m - 1][n - 1] == std::numeric_limits<int>::max()) {
             return -1; // Not possible to reach the destination
-        
+        } else {
+            return min_steps[m - 1][n - 1]; // Return the minimum steps
+        }
     }
 };
