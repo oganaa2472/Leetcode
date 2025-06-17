@@ -1,54 +1,34 @@
-const int MOD = 1e9 + 7;
 
 class Solution {
 public:
-    long long modInverse(long long a, long long mod){
-        long long res = 1;
-        long long power = mod - 2;
-
-        while (power){
-            if (power & 1)
-                res = res * a % mod;
-            a = a * a % mod;
-            power >>= 1;
+    int mod = 1e9 + 7;
+    using ll = long long;
+    int binpow(int a,int b){ 
+        int ans = 1;
+        while(b){
+            if(b%2){
+                ans = (1LL * a *  ans)%mod;
+            }
+            b = b/2;
+            a = (1LL * a * a)%mod;
         }
-
-        return res;
+        return ans;
     }
-
-    int nCr(int n, int r){
-        if (r > n) return 0;
-        if (r == 0 || r == n) return 1;
-
-        long long res = 1;
-
-        for (int i = 1; i <= r; i++){
-            res = res * (n - r + i) % MOD;
-            res = res * modInverse(i, MOD) % MOD;
+    int NCR(int n,int r){
+        r = min(r,n-r);
+        int ans = 1;
+        int rfac = 1;
+        for(int i = 0;i<r;i++){
+            ans = (1LL * ans * (n - i))%mod;
+            rfac = (1LL * rfac * (i+1))%mod;
         }
-
-        return (int)res;
+        ans = (1LL * ans * binpow(rfac,mod-2))%mod;
+        return ans;
     }
-
-
-    long long bin_expo(long long a, long long b)
-    {
-        long long result = 1;
-        while (b) {
-            if (b & 1)
-                result = (result * a) % MOD;
-            a = (a * a) % MOD;
-            b >>= 1;
-        }
-        return result;
-    }
-
     int countGoodArrays(int n, int m, int k) {
-        // bin_expo = binary exponentiation = power a^b
-        int formula = (m * 1ll * bin_expo(m-1, n-(k+1))) % MOD;
-
-        int updated_formula = (formula *1ll* nCr(n-1, k)) % MOD; 
-
-        return updated_formula;
+        int ans = m;
+        ans = (1LL * ans * binpow(m-1,n-k-1))%mod;
+        ans = (1LL * ans * NCR(n-1,k))%mod;
+        return ans;
     }
 };
