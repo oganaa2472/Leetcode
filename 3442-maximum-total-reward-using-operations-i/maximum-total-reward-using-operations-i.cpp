@@ -1,24 +1,40 @@
 class Solution {
 public:
-    vector<vector<int>> dp;
-    vector<int> nums;
-    int n;
-    int solve(int i, int sum,vector<int>&nums){
-        if(i==n) return sum;
+    map<pair<int, int>, int> dp;
 
-        if(dp[i][sum]!=-1)
-            return dp[i][sum];
-        int exc = solve(i+1,sum,nums);
-        int inc = sum;
-        if(sum<nums[i]){
-            inc =solve(i+1,sum+nums[i],nums);
+    int solve(int i, int sum, vector<int>& rewardValues) {
+        int n = rewardValues.size();
+        if (i == n) return 0;
+
+        auto key = make_pair(i, sum);
+        if (dp.count(key)) return dp[key];
+
+        int exclude = solve(i + 1, sum, rewardValues);
+        int include = 0;
+
+        if (rewardValues[i] > sum) {
+            include = rewardValues[i] + solve(i + 1, sum + rewardValues[i], rewardValues);
         }
-       return dp[i][sum] = max(inc,exc);
+
+        return dp[key] = max(include, exclude);
     }
-    int maxTotalReward(vector<int>& nums) {
-        n = nums.size();
-        dp.assign(2001,vector<int>(4001,-1));
-        sort(nums.begin(),nums.end());
-        return solve(0,0,nums);
+
+    int maxTotalReward(vector<int>& rewardValues) {
+        sort(rewardValues.begin(), rewardValues.end());
+        vector<bool> dp(200001,false);
+        dp[0] = true;
+        int maxReward = 0;
+        for(int r:rewardValues){
+            for(int i = maxReward;i>=0;i--){
+                if(dp[i]&&r>i){
+                    dp[i+r] = true;
+                    maxReward = max(i+r,maxReward);
+                }
+            }
+        }
+        for (int i = 200000; i >= 0; --i) {
+            if (dp[i]) return i;
+        }
+        return 0;
     }
 };
