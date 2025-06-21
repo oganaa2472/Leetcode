@@ -8,7 +8,8 @@ public:
         }
         if(freq[j]-freq[i]<=k)return 0;
         if(dp[i][j]!=-1) return dp[i][j];
-       
+        // baaaaaa pick b or 6 - 1 which one we choose we can choose either which one is smallest i get it
+        
         return dp[i][j]= min(freq[i]+solve(freq,i+1,j,k),freq[j]-(freq[i]+k)+solve(freq,i,j-1,k));
     }
     int minimumDeletions(string word, int k) {
