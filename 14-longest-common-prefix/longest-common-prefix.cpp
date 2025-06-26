@@ -1,54 +1,69 @@
-class Node{
-    public:
-        unordered_map<char,Node*> children;
+class TrieNode {
+public:
+    TrieNode* children[26];
+    bool isEnd;
+    int linkCount;  // To count the number of children
+
+    TrieNode() : isEnd(false), linkCount(0) {
+        for (int i = 0; i < 26; ++i) {
+            children[i] = nullptr;
+        }
+    }
+
+    void put(char ch, TrieNode* node) {
+        if (children[ch - 'a'] == nullptr) {
+            children[ch - 'a'] = node;
+            linkCount++;
+        }
+    }
+
+    bool contains(char ch) { return children[ch - 'a'] != nullptr; }
+
+    int getLinks() const { return linkCount; }
 };
 
-class Trie{
-    public:
-        Node* root;
-        Trie(){
-            root = new Node();
+class Trie {
+public:
+    TrieNode* root;
+
+    Trie() { root = new TrieNode(); }
+
+    void insert(string word) {
+        TrieNode* node = root;
+        for (char c : word) {
+            if (!node->contains(c)) {
+                node->put(c, new TrieNode());
+            }
+            node = node->children[c - 'a'];
         }
-        void insert(string& word){
-            Node* node = root;
-            for(char c:word){
-                if(node->children.find(c)==node->children.end()){
-                    node->children[c] = new Node();
-                }
-                node = node->children[c];
+        node->isEnd = true;
+    }
+
+    string searchLongestPrefix(string word) {
+        TrieNode* node = root;
+        string prefix;
+        for (char c : word) {
+            if (node->contains(c) && node->getLinks() == 1 && !node->isEnd) {
+                prefix += c;
+                node = node->children[c - 'a'];
+            } else {
+                break;
             }
         }
-        int lcp(string& word,int prefixLen){
-            Node* node = root;
-            int i = 0;
-            while(i<min((int)word.size(),prefixLen)){
-                if(node->children.find(word[i])==node->children.end())
-                {
-                    return i;
-                }
-                node = node->children[word[i]];
-                i++;
-            }
-            return min((int)word.size(),prefixLen);
-        }
+        return prefix;
+    }
 };
+
 class Solution {
 public:
     string longestCommonPrefix(vector<string>& strs) {
-        int mini = 0;
-        int n = strs.size();
-        for(int i = 1;i<n;i++){
-            if(strs[mini].size()>strs[i].size()){
-                mini = i;
-            }
-        }
-        Trie trie;
-        trie.insert(strs[mini]);
-        int prefixLen = strs[mini].size();
-        for(int i = 0;i<n;i++){
-            prefixLen = trie.lcp(strs[i],prefixLen);
-        }
-        return strs[mini].substr(0,prefixLen);
+        if (strs.empty()) return "";
+        if (strs.size() == 1) return strs[0];
 
+        Trie trie;
+        for (int i = 1; i < strs.size(); i++) {
+            trie.insert(strs[i]);
+        }
+        return trie.searchLongestPrefix(strs[0]);
     }
 };
