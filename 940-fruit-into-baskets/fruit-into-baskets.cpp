@@ -5,16 +5,17 @@ public:
         int ans=0;
         int i=0, j=0;
         int n=arr.size();
-        while(i<n ){
-            mp[arr[i]]++,i++;
+        while(i<n){
+            mp[arr[i]]++;
             while(mp.size()>2){
               mp[arr[j]]--;
               if(mp[arr[j]]==0)
                 mp.erase(arr[j]);
               j++;
             } 
-            int c=0;
-            ans=max(ans,i-j);
+            
+            ans=max(ans,i-j+1);
+            i++;
         }
         return ans;
     }
