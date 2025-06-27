@@ -2,35 +2,28 @@ class Solution {
 public:
     vector<vector<int>> threeSum(vector<int>& nums) {
         sort(nums.begin(),nums.end());
-
-        set<vector<int>> st;
-        vector<vector<int>> answer;
+        vector<vector<int>> res;
         int n = nums.size();
-     
-        for(int i =0 ;i<n;i++){
-            int j = i+1;
-            int k = nums.size()-1;
-
-            while(j<k){
-                
-                if(nums[i]+nums[j]+nums[k]==0){
-                    vector<int> triplet = {nums[i], nums[j], nums[k]};
-                    answer.push_back(triplet);
-                    while(nums[j]==triplet[1]&&j<k) j++;
-                    while(nums[k]==nums[2]&&k>j) k--;
-                    
-                }else if(nums[i]+nums[j]+nums[k]>0){
-                    k--;
-                }else{
-                    j++;
+        for(int i = 0;i<n;i++){
+            if(i>0 &&nums[i]==nums[i-1]) continue;
+            int l = i+1;
+            int r = nums.size()-1;
+            while(l<r){
+                int sum = nums[i]+nums[l]+nums[r];
+                if(sum>0){
+                    r--;
+                }else if(sum<0) l++;
+                else{
+                    res.push_back({nums[i],nums[l],nums[r]});
+                    l++;
+                    r--;
+                    while(l<r&&nums[l]==nums[l-1]){
+                        l++;
+                    }
                 }
             }
-            while (i + 1 < n && nums[i + 1] == nums[i]) 
-                i++;
+           
         }
-        // for(auto& s:st){
-        //     answer.push_back(s);
-        // }
-        return answer;
+         return res;
     }
 };
