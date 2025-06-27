@@ -1,28 +1,25 @@
 class Solution {
 public:
-    bool isCheck(char ch) {
-        return !isalnum(ch); // Check if the character is not alphanumeric
+    bool alpha(char c){
+        return (c>='A'&&c<='Z') ||(c>='a'&&c<='z') ||(c>='0'&&c<='9') ;
     }
     bool isPalindrome(string s) {
-        int i = 0;
-        int j = s.size() - 1;
+        int l = 0, r = s.size()-1;
 
-        while (i < j) {
-            char ch = tolower(s[i]);
-            char c2 = tolower(s[j]);
-
-            if (isCheck(ch)) {
-                i++;
-            } else if (isCheck(c2)) {
-                j--;
-            } else {
-                if (ch != c2) {
-                    return false;
-                }
-                i++;
-                j--;
+        while(l<r){
+            while(l<r&&!alpha(s[l])){
+                l++;
             }
+            while(r>l&&!alpha(s[r])){
+                    r--;
+            }
+            if (tolower(s[l]) != tolower(s[r])) {
+                return false;
+            }
+            l++;
+            r--;
         }
         return true;
+        
     }
 };
