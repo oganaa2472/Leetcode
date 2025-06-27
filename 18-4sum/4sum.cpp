@@ -1,34 +1,33 @@
 class Solution {
 public:
     vector<vector<int>> fourSum(vector<int>& nums, int target) {
-        vector<vector<int>> answer;
+        vector<vector<int>> res;
         int n = nums.size();
-        sort(nums.begin(),nums.end());
+        sort(nums.begin(), nums.end());
         for(int i = 0;i<n;i++){
-            for(int j = i+1;j<n;j++){
-                long long low = j+1;
-                long long high = n-1;
-                
-                while(low<high){
-                    if((long long)nums[i]+nums[j]+nums[low]+nums[high]==(long long)target){
-                        vector<int> four = {
-                            nums[i],nums[j],nums[low],nums[high]
-                        };
-                        answer.push_back(four);
-                        while(nums[low]==four[2]&&low<high) low++;
-                        while(nums[high]==four[3]&&high>low) high--;
-                    }else if((long long)nums[i]+nums[j]+nums[low]+nums[high]>(long long)target){
-                        high--;
-                    }else{
-                        low++;
+            if (i > 0 && nums[i] == nums[i - 1]) continue;
+            for (int j = i + 1; j < n; j++) {
+                if (j > i + 1 && nums[j] == nums[j - 1]) continue;
+                int left = j+1;
+                int right = n-1;
+                while(left<right){
+                    long long sum = (long long) nums[i] + nums[j] + nums[left] + nums[right];
+                    if (sum == target) {
+                        res.push_back({nums[i], nums[j], nums[left], nums[right]});
+                        left++;
+                        right--;
+                        while (left < right && nums[left] == nums[left - 1]) left++;
+                        while (left < right && nums[right] == nums[right + 1]) right--;
+                    }
+                    else if (sum < target) {
+                        left++;
+                    } else {
+                        right--;
                     }
                 }
-                while (j + 1 < n && nums[j + 1] == nums[j]) 
-                    j++;
             }
-             while (i + 1 < n && nums[i + 1] == nums[i]) 
-                i++;
+            
         }
-        return answer;
+        return res;
     }
 };
