@@ -1,24 +1,24 @@
 class Solution {
 public:
     bool isValid(string s) {
-        stack<char> st; 
-        for(int i = 0;i<s.size();i++){
-            if(s[i]=='('||s[i]=='['||s[i]=='{'){
-                st.push(s[i]);
-            }else {
-                if(st.empty()) return false;
-                char top = st.top();
-                if(top=='('&&s[i]!=')'){
+        std::stack<char> stack;
+        std::unordered_map<char, char> closeToOpen = {
+            {')', '('},
+            {']', '['},
+            {'}', '{'}
+        };
+
+        for (char c : s) {
+            if (closeToOpen.count(c)) {
+                if (!stack.empty() && stack.top() == closeToOpen[c]) {
+                    stack.pop();
+                } else {
                     return false;
                 }
-                else if(top=='['&&s[i]!=']'){
-                    return false;
-                }else if(top=='{'&&s[i]!='}'){
-                    return false;
-                }
-                st.pop();
+            } else {
+                stack.push(c);
             }
         }
-        return st.size()==0?true:false;
+        return stack.empty();
     }
 };
