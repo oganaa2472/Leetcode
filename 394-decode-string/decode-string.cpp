@@ -1,39 +1,30 @@
 class Solution {
 public:
-    string decodeString(string s) {
-        vector<string> stack;
-
-        for (char& c : s) {
-            if (c != ']') {
-                stack.push_back(string(1, c));
-            } else {
-                string substr = "";
-                while (stack.back() != "[") {
-                    substr = stack.back() + substr;
-                    stack.pop_back();
+    string solve(int& i,string& s){
+        string res;
+        int k = 0;
+        while(i<s.size()){
+            char c = s[i];
+            if(isdigit(c)){
+                k = k*10+(c-'0');
+            }else if(c=='['){
+                i++;
+                string sub = solve(i,s);
+                while(k--){
+                    res+=sub;
                 }
-                stack.pop_back();
-
-                string k = "";
-                while (!stack.empty() && isdigit(stack.back()[0])) {
-                    k = stack.back() + k;
-                    stack.pop_back();
-                }
-                int repeatCount = stoi(k);
-
-                string repeated = "";
-                for (int i = 0; i < repeatCount; ++i) {
-                    repeated += substr;
-                }
-                stack.push_back(repeated);
+                k=0;
+            }else if(c==']'){
+                return res;
+            }else{
+                res+=c;
             }
+            i++;
         }
-
-        string res = "";
-        for (const string& part : stack) {
-            res += part;
-        }
-
         return res;
+    }
+    string decodeString(string s) {
+        int i = 0;
+        return solve(i, s);
     }
 };
