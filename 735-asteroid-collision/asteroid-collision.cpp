@@ -1,61 +1,27 @@
 class Solution {
 public:
-    vector<int> asteroidCollision(vector<int>& a) {
+    vector<int> asteroidCollision(vector<int>& ast) {
         
 
-        stack<int> sta;
-    
-        for(int i=0;i<a.size();i++){
-            
-            if(sta.empty()) {
-                sta.push(a[i]);
-            }
-            else{
-                int top = sta.top();
-                if(top>0&&a[i]>0){
-                    sta.push(a[i]);
-                }else if(top<0&&a[i]<0){
-                    sta.push(a[i]);
-                }else{
-                    if(top>0){
-                        
-                        if(0==top+a[i]) sta.pop();
-                        else{
-                           
-                        while(!sta.empty()&&top>0&&top+a[i]<0){
-                                
-                                sta.pop();
-                                if(sta.empty())break;
-                                top = sta.top();
-                            }
-                            if(sta.empty()){
-                               sta.push(a[i]);
-                            }
-                            else if(top<0){
-                                sta.push(a[i]);
-                            }else if(top+a[i]==0){
-                                sta.pop();
-                            }
-                        }
-                        
+        vector<int> sta;
 
-                       
-                         
-                        
-                    }else{
-                        sta.push(a[i]);
-                    }
+        for(int a:ast){
+            while(!sta.empty() && a<0&& sta.back()>0){
+                int diff = a + sta.back();
+                if(diff<0){
+                    sta.pop_back();
+                }else if(diff>0){
+                    a = 0;
+                }else{
+                    a = 0;
+                    sta.pop_back();
                 }
             }
-        }   
-        int size = sta.size();
-        vector<int> answer(size,0);
-        while(!sta.empty()){
-            int peek = sta.top();
-            answer[size-1] = peek;
-            size--;
-            sta.pop();
+            if(a!=0){
+                sta.push_back(a);
+            }
         }
-        return answer;
+        return sta;
     }
+
 };
