@@ -1,53 +1,26 @@
 class Solution {
 public:
-    // bool ischeck(string s){
-    //     stack<char> ch;
-    //     for(int i = 0;i<s.size();i++){
-    //         if(s[i]=='(') ch.push(s[i]);
-    //         else{
-    //             if(ch.empty()) return false;
-    //             ch.pop();
-    //         }
-    //     }
-    //     return ch.size()==0;
-    // }
-    void solve(string op,int open, int close,vector<string>& answer){
-         if(open==0&&close==0){
-            answer.push_back(op);
+    void back(int start,int end,int n,vector<string>& res,string& sta){
+        if(start==end && start == n){
+            res.push_back(sta);
             return;
         }
-        if(open==close){
-            string str = op;
-            str +="(";
-            solve(str,open-1,close,answer);
-        }
-        else if(open == 0){
-            string str = op;
-            str+=")";
-            solve(str, open, close-1, answer);
-        }
-        else if(close == 0){
-            string str = op;
-            str+="(";
-            solve(str, open-1, close, answer);
-        }else{
-            string op1 = op;
-            string op2 = op;
-            op1.push_back('(');
-            op2.push_back(')');
-            solve(op1, open-1, close, answer);
-            solve(op2, open, close-1, answer);
-        }
 
+        if(start<n){
+            sta+='(';
+            back(start+1,end,n,res,sta);
+            sta.pop_back();
+        }
+        if(end<start){
+            sta+=')';
+            back(start,end+1,n,res,sta);
+            sta.pop_back();
+        }
     }
     vector<string> generateParenthesis(int n) {
-        vector<string> answer;
-
-        int open = n;
-        int close = n;
-       
-        string op = "";
-        solve(op, open, close, answer);
-        return answer;
+        vector<string> res;
+        string stack;
+        back(0,0,n,res,stack);
+        return res;
     }
 };
