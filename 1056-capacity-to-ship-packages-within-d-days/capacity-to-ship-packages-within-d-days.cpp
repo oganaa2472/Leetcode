@@ -1,32 +1,30 @@
 class Solution {
-public: 
-    int check(int mid,vector<int>&w,int days){
+public:
+    int canWe(vector<int>& weights, int days,int mid){
         int day = 1;
-        int sum = 0;
-        for(int i = 0;i<w.size();i++){
-            sum=sum+w[i];
-            if(sum>mid){
+        int total = 0;
+        for(auto w:weights){
+            total+=w;
+            if(total>mid){
                 day++;
-                sum = w[i];
+                total=w;
             }
         }
-        return day<=days;
+        return days>=day;
     }
-    int shipWithinDays(vector<int>& w, int days) {
-        int total = accumulate(w.begin(),w.end(),0);
-        int left = *max_element(w.begin(), w.end());
-        // int left = 0;
-        int right = total;
-        int ans = total;
-        while(left<=right){
-            int mid = left+(right-left)/2;
-            if(check(mid,w,days)){
-                right = mid-1;
-                ans = min(mid,ans);
+    int shipWithinDays(vector<int>& weights, int days) {
+        int l = *max_element(weights.begin(),weights.end());
+        int r = accumulate(weights.begin(),weights.end(),0);
+        int res = r;
+        while(l<=r){
+            int mid = (l+r)/2;
+            if(canWe(weights,days,mid)){
+                res = min(mid,res);
+                r = mid-1;
             }else{
-                left = mid+1;
+                l = mid+1;
             }
-        }   
-        return ans;
+        }
+        return res;
     }
 };
