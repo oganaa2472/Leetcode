@@ -10,17 +10,21 @@
 class Solution {
 public:
     int guessNumber(int n) {
-        int left = 1;
-        int right = n;
-        while(left<=right){
-            int mid = left + (right - left) / 2;
-            if(guess(mid)==0) return mid;
-            else if(guess(mid)>0){
-                left = mid+1;
+        int l= 1;
+        int r = n;
+        while(true){
+            int m1 = l+(r-l)/3;
+            int m2 = r-(r-l)/3;
+            if(guess(m1)==0) return m1;
+            if(guess(m2)==0) return m2;
+            if (guess(m1) + guess(m2) == 0) {
+                l = m1+1;
+                r = m2-1;
+            }else if(guess(m1)==-1){
+                r = m1-1;
             }else{
-                right = mid-1;
+                l = m2+1;
             }
         }
-        return left;
     }
 };
