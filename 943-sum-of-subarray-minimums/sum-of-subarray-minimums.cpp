@@ -1,43 +1,42 @@
-using ll = long long;
-const int MOD = 1e9 + 7;
-
 class Solution {
 public:
-    int sumSubarrayMins(vector<int>& nums) {
-        int length = nums.size();
-        vector<int> left(length, -1);
-        vector<int> right(length, length);
-        stack<int> stk;
+    int sumSubarrayMins(vector<int>& arr) {
+        int n = arr.size();
+        vector<int> prev(n), next(n);
+        stack<int> s;
 
-        for (int i = 0; i < length; ++i) {
-            while (!stk.empty() && nums[stk.top()] >= nums[i]) {
-                stk.pop();
+        // Previous Smaller Element
+        for (int i = 0; i < n; ++i) {
+            while (!s.empty() && arr[s.top()] > arr[i]) {
+                s.pop();
             }
-            if (!stk.empty()) {
-                left[i] = stk.top();
-            }
-            stk.push(i);
+            prev[i] = s.empty() ? -1 : s.top();
+            s.push(i);
         }
 
-        stk = stack<int>();
+        // Clear stack for next pass
+        while (!s.empty()) s.pop();
 
-        for (int i = length - 1; i >= 0; --i) {
-            while (!stk.empty() && nums[stk.top()] > nums[i]) {
-                stk.pop();
+        // Next Smaller Element
+        for (int i = n - 1; i >= 0; --i) {
+            while (!s.empty() && arr[s.top()] >= arr[i]) {
+                s.pop();
             }
-            if (!stk.empty()) {
-                right[i] = stk.top();
-            }
-            stk.push(i);
+            next[i] = s.empty() ? n : s.top();
+            s.push(i);
         }
 
-        ll sum = 0;
+        // Calculate contribution
+        long long result = 0;
+        int mod = 1e9 + 7;
 
-        for (int i = 0; i < length; ++i) {
-            sum += static_cast<ll>(i - left[i]) * (right[i] - i) * nums[i] % MOD;
-            sum %= MOD;
+        for (int i = 0; i < n; ++i) {
+            long long left = i - prev[i];
+            long long right = next[i] - i;
+            long long contrib = (left * right) % mod * arr[i] % mod;
+            result = (result + contrib) % mod;
         }
 
-        return sum;
+        return result;
     }
 };
