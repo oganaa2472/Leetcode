@@ -1,36 +1,37 @@
 class Solution {
 public:
-    multiset<int> s;
-    multiset<int>::iterator mid;
-    void insertX(int x) {
-        s.insert(x);
-        if (s.size() == 1) {
-            mid = s.begin(); // Эхний элемент дунд нь
-            return;
-        }
-
-        if (x < *mid) {
-            if (s.size() % 2 == 0) --mid; // Дараалал тэгш бол буцаана
-        } else {
-            if (s.size() % 2 == 1) ++mid; // Дараалал сондгой бол урагшлуулна
-        }
-    }
-
-    int getMedian() {
-        return *mid;
-    }
     double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
-        
-        for(int i = 0;i<nums1.size();i++){
-            insertX(nums1[i]);
+        vector<int>& A = nums1;
+        vector<int>& B = nums2;
+        int total = A.size() + B.size();
+        int half = (total + 1) / 2;
+
+        if (B.size() < A.size()) {
+            swap(A, B);
         }
-        for(int i = 0;i<nums2.size();i++){
-            insertX(nums2[i]);
+
+        int l = 0;
+        int r = A.size();
+        while (l <= r) {
+            int i = (l + r) / 2;
+            int j = half - i;
+
+            int Aleft = i > 0 ? A[i - 1] : INT_MIN;
+            int Aright = i < A.size() ? A[i] : INT_MAX;
+            int Bleft = j > 0 ? B[j - 1] : INT_MIN;
+            int Bright = j < B.size() ? B[j] : INT_MAX;
+
+            if (Aleft <= Bright && Bleft <= Aright) {
+                if (total % 2 != 0) {
+                    return max(Aleft, Bleft);
+                }
+                return (max(Aleft, Bleft) + min(Aright, Bright)) / 2.0;
+            } else if (Aleft > Bright) {
+                r = i - 1;
+            } else {
+                l = i + 1;
+            }
         }
-        if(s.size()%2==1) return getMedian();
-        double x = getMedian();
-        mid++;
-        double y = getMedian();
-        return (x+y)/2;
+        return -1;
     }
 };
