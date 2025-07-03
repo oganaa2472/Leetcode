@@ -12,60 +12,54 @@ class Solution {
 public:
     int findInMountainArray(int target, MountainArray &mountainArr) {
         int length = mountainArr.length();
-        int low = 0;
-        int high = length-1;
 
-        int peak;
-        int mid = (low+high)/2;
-        
-        while(low<high){
-            int mid = (low+high)/2;
-            int fval = mountainArr.get(mid);
-            int sval = mountainArr.get(mid+1);
-            if(fval<sval){
-                low = mid+1;
-            }else{
-                high = mid-1;
-            }
-        }
-        peak = low;
-
-        low = 0;
-        high = peak;
-        int answer = -1;
-        while(low<=high){
-            int mid = (low+high)/2;
-
-            if(mountainArr.get(mid)==target){
-                answer = mid;
+        // Find Peak
+        int l = 1, r = length - 2, peak = 0;
+        while (l <= r) {
+            int m = (l + r) / 2;
+            int left = mountainArr.get(m - 1);
+            int mid = mountainArr.get(m);
+            int right = mountainArr.get(m + 1);
+            if (left < mid && mid < right) {
+                l = m + 1;
+            } else if (left > mid && mid > right) {
+                r = m - 1;
+            } else {
+                peak = m;
                 break;
-            }else if(mountainArr.get(mid)>target){
-                high = mid-1;
-            }else{
-                low = mid+1;
             }
         }
-        if(answer!=-1){
-            return answer;
-        }else{
-            high = peak;
-            low = length-1;
 
-            while(high<=low){
-                int mid = (low+high)/2;
-                if(mountainArr.get(mid)==target){
-                    answer = mid;
-                    break;
-                }else if(mountainArr.get(mid)>target){
-                    high = mid+1;
-                }else{
-                    low = mid-1;
-                }
+        // Search left portion
+        l = 0;
+        r = peak - 1;
+        while (l <= r) {
+            int m = (l + r) / 2;
+            int val = mountainArr.get(m);
+            if (val < target) {
+                l = m + 1;
+            } else if (val > target) {
+                r = m - 1;
+            } else {
+                return m;
             }
-            return answer;
         }
 
-       
+        // Search right portion
+        l = peak;
+        r = length - 1;
+        while (l <= r) {
+            int m = (l + r) / 2;
+            int val = mountainArr.get(m);
+            if (val > target) {
+                l = m + 1;
+            } else if (val < target) {
+                r = m - 1;
+            } else {
+                return m;
+            }
+        }
 
+        return -1;
     }
 };
