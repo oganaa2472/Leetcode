@@ -6,9 +6,7 @@ public:
         vector<vector<int>> merged;
         for(auto interval:intervals){
             if(!merged.empty()&&merged.back()[1]>interval[0]){
-                
                 merged[merged.size()-1][1] = min(merged.back()[1],interval[1]);
-                
             }else{
                 merged.push_back(interval);
             }
