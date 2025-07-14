@@ -25,7 +25,7 @@ public:
                 }
             }else{
                 n--;
-                if(n<=k) return ch;  
+                if(n==k) return ch;  
             }
         }
         return '.';
