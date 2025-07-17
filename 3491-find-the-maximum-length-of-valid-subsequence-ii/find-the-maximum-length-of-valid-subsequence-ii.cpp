@@ -1,16 +1,15 @@
 class Solution {
 public:
     int maximumLength(vector<int>& nums, int k) {
-        vector<vector<int>> dp(k , vector<int>(k , 0));
-        int maxi = 1;
-        for(int num : nums){
-            int currNum = num % k;
-            for(int mod = 0 ; mod < k ; mod++){
-                  int prevNum = (mod - currNum + k) % k;
-                  dp[currNum][mod] = max(dp[currNum][mod] , 1 + dp[prevNum][mod]);
-                  maxi = max(maxi , dp[currNum][mod]);
+        vector<vector<int>> dp(k, vector<int>(k, 0));
+        int res = 0;
+        for (int num : nums) {
+            num %= k;
+            for (int prev = 0; prev < k; ++prev) {
+                dp[prev][num] = dp[num][prev] + 1;
+                res = max(res, dp[prev][num]);
             }
         }
-        return maxi;
+        return res;
     }
 };
