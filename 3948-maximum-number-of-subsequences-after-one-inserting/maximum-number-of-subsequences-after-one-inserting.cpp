@@ -25,11 +25,11 @@ public:
         {
             if(s[i]=='C')
             {
-                op1+=(pref[i]+1)*suff[i];  //add L
-                op2+=pref[i]*(suff[i]+1);  //add T 
-                ans+=pref[i]*suff[i]; //org se bnne vaale
+                op1+=(pref[i]+1)*suff[i]; 
+                op2+=pref[i]*(suff[i]+1); 
+                ans+=pref[i]*suff[i]; 
             }
-            else op3=max(op3,pref[i]*suff[i]);  //add C 
+            else op3=max(op3,pref[i]*suff[i]); 
         }
         return max({op1,op2,ans+op3});
     }
