@@ -10,34 +10,35 @@
  */
 class Solution {
 public:
+    ListNode* getKth(ListNode* cur,int k){
+        while(cur&&k>0){
+            cur=cur->next;
+            k--;
+        }
+        return cur;
+    }
     ListNode* reverseKGroup(ListNode* head, int k) {
-        vector<int> list;
-        ListNode* t = head;
-        ListNode* t1 = head;
-        while(t!=NULL){
-            list.push_back(t->val);
-            t=t->next;
-        }
-        vector<int> answer;
-        int n = list.size();
-        int size = n/k;
-        cout<<size<<endl;
-        for(int i = 0;i<size;i++){
-            for(int j = k*(i+1)-1;j>=k*(i);j--){
-                answer.push_back(list[j]);
+       ListNode* dummy = new ListNode(0,head);
+       ListNode* groupPrev = dummy;
+        while(true){
+            ListNode* kth = getKth(groupPrev,k);
+            if(!kth){
+                break;
             }
-        }
-        if(n%k!=0){
-            for(int j = size*k;j<n;j++){
-                answer.push_back(list[j]);
+            ListNode* groupNext=kth->next;
+
+            ListNode* prev = kth->next;
+            ListNode* cur = groupPrev->next;
+            while(cur!=groupNext){
+                ListNode* tmp = cur->next;
+                cur->next  = prev;
+                prev = cur;
+                cur = tmp;
             }
+            ListNode* t = groupPrev->next;
+            groupPrev->next = kth;
+            groupPrev = t;
         }
-        ListNode* h = t1;
-        for(auto a:answer){
-            cout<<a;
-            h->val = a;
-            h = h->next;
-        }
-        return t1;
+        return dummy->next;
     }
 };
