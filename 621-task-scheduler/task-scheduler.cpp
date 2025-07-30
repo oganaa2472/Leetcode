@@ -1,41 +1,34 @@
 class Solution {
 public:
     int leastInterval(vector<char>& tasks, int n) {
-        // Building frequency map
-        int freq[26] = {0};
-        for (char &ch : tasks) {
-            freq[ch - 'A']++;
-        }
-
-        // Max heap to store frequencies
+        map<char,int> freq;
+        for(auto c:tasks) freq[c]++;
         priority_queue<int> pq;
-        for (int i = 0; i < 26; i++) {
-            if (freq[i] > 0) {
-                pq.push(freq[i]);
-            }
-        }
-
+        for(auto [c,cnt]:freq){
+            pq.push(cnt);
+        }   
         int time = 0;
-        // Process tasks until the heap is empty
-        while (!pq.empty()) {
-            int cycle = n + 1;
+        int cycle = n+1;
+        while(!pq.empty()){        
             vector<int> store;
-            int taskCount = 0;
-            // Execute tasks in each cycle
-            while (cycle-- && !pq.empty()) {
-                if (pq.top() > 1) {
-                    store.push_back(pq.top() - 1);
-                }
+            cycle = n+1;
+            int taskCount= 0;
+            while(cycle>0&&!pq.empty()){
+                cycle--;
+                if(pq.top()>1)
+                    store.push_back(pq.top()-1);
                 pq.pop();
                 taskCount++;
             }
-            // Restore updated frequencies to the heap
-            for (int &x : store) {
-                pq.push(x);
+        
+            for(int i = 0;i<store.size();i++){
+                pq.push(store[i]);
             }
-            // Add time for the completed cycle
-            time += (pq.empty() ? taskCount : n + 1);
+            if(!pq.empty()) time+=n+1;
+            else time+= taskCount;
         }
         return time;
+
+        
     }
 };
