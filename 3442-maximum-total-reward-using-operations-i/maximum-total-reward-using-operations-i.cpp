@@ -1,7 +1,7 @@
 class Solution {
 public:
     int maxTotalReward(vector<int>& rewardValues) {
-          bitset<100001> dp,validPrev,mask;
+          bitset<4002> dp,validPrev,mask;
         dp[0] = 1;
         int maskId = 0;
         sort(rewardValues.begin(),rewardValues.end());
@@ -10,7 +10,7 @@ public:
              validPrev = dp&mask;
              dp|=(validPrev<<val);
         }
-        int res=1e5;
+        int res=4002;
         while(!dp[res]) --res;
         return res;
     }
