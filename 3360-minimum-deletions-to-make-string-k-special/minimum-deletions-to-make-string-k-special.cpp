@@ -5,7 +5,7 @@ public:
         if(i==j) return 0;
         if(freq[j]-freq[i]<=k) return 0;
         if(dp[i][j]!=-1) return dp[i][j];
-        return dp[i][j]= min(freq[i]+solve(freq,i+1,j,k),freq[j]-(freq[i]+k)+solve(freq,i,j-1,k));
+        return dp[i][j]= min(freq[i]+solve(freq,i+1,j,k),(freq[j]-freq[i]-k)+solve(freq,i,j-1,k));
     }
     int minimumDeletions(string word, int k) {
         dp.resize(26,vector<int>(26,-1));
