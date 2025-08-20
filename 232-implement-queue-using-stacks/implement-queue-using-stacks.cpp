@@ -1,12 +1,13 @@
 class MyQueue {
 public:
     stack<int> st;
+
     MyQueue() {
         
     }
     
     void push(int x) {
-        
+       
         stack<int> st1;
         while(!st.empty()){
             int peek = st.top();
@@ -19,12 +20,13 @@ public:
             st.push(peek);
             st1.pop();
         }
+        
     }
-    
     int pop() {
-        int first = st.top();
+        if(empty()) return -1;
+        int top = st.top();
         st.pop();
-        return first;
+        return top;
     }
     
     int peek() {
