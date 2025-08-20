@@ -11,7 +11,7 @@ public:
                 indegree[it]++;
             }
         }
-        queue<int> q;
+         queue<int> q;
        
 		for (int i = 0; i < numCourses; i++) {
 			if (indegree[i] == 0) {
