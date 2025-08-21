@@ -1,41 +1,27 @@
-/**
- * Definition for a binary tree node.
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
- *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
- * };
- */
 class Solution {
 public:
     vector<int> rightSideView(TreeNode* root) {
-        vector<int> view;
-        if (!root) return view;
+        if(!root) return {};  // handle null root
 
-        queue<pair<TreeNode*, int>> q;
-        q.push({root, 0});
+        queue<pair<TreeNode*,int>> q;
+        q.push({root,0});
+        map<int,int> mp;  // use map to keep levels sorted
 
-        while (!q.empty()) {
+        while(!q.empty()){
             auto [node, level] = q.front();
             q.pop();
 
-            if (level >= view.size()) {
-                view.push_back(node->val);
-            } else {
-                view[level] = node->val;
-            }
-
-            if (node->left) {
-                q.push({node->left, level + 1});
-            }
-            if (node->right) {
-                q.push({node->right, level + 1});
+            if(node){  // check null
+                mp[level] = node->val;  // overwrite with rightmost node at this level
+                if(node->left) q.push({node->left, level+1});
+                if(node->right) q.push({node->right, level+1});
             }
         }
 
-        return view;
+        vector<int> answer;
+        for(auto [level, val] : mp){  // correct naming
+            answer.push_back(val);
+        }
+        return answer;
     }
 };
