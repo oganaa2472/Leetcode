@@ -1,25 +1,25 @@
 class Solution {
 public:
-    bool isCheck(int right,int left,int k,int sum){
-        return right+1-left-sum<=k;
-    }
     int longestSubarray(vector<int>& nums) {
-        int answer = 0;
-        for(int i = 1;i<2;i++){
-            int sum = 0;
-            int start = 0;
-            
-            for(int end = 0;end<nums.size();end++){
-                if(nums[end]==1){
-                    sum++;
-                }
-                while(!isCheck(end,start,1,sum)){
-                    if(nums[start]==i) sum--;
-                    start++;
-                }
-                answer = max(end-start,answer);
+        // Number of zero's in the window.
+        int zeroCount = 0;
+        int longestWindow = 0;
+        // Left end of the window.
+        int start = 0;
+        
+        for (int i = 0; i < nums.size(); i++) {
+            zeroCount += (nums[i] == 0);
+                          
+            // Shrink the window until the count of zero's
+            // is less than or equal to 1.
+            while (zeroCount > 1) {
+                zeroCount -= (nums[start] == 0);
+                start++;
             }
+              
+            longestWindow = max(longestWindow, i - start);
         }
-        return answer;   
+
+        return longestWindow;
     }
 };
