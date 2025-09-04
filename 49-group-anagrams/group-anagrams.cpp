@@ -1,22 +1,24 @@
 class Solution {
 public:
-    string isAnagram(string s) {
-       sort(s.begin(),s.end());
-       return s;
-    }
     vector<vector<string>> groupAnagrams(vector<string>& strs) {
+        std::unordered_map<std::string, std::vector<std::string>> freq;
+        for(auto& str:strs){
+            vector<int> f(26,0);
+
+            for(auto& ch:str){
+                f[ch-'a']++;
+            }
+            string key = "";
+            for (int count : f) {
+                key += '#' + std::to_string(count); 
+            }
+            freq[key].emplace_back(str);
+        } 
+        vector<std::vector<std::string>> result;
+        for (const auto& pair : freq) {
+            result.emplace_back(pair.second);
+        }
         
-        int n = strs.size();
-        unordered_map<string,vector<string>> mp;
-        for(auto st : strs){
-            mp[isAnagram(st)].push_back(st);
+        return result;
         }
-        vector<vector<string>> ans(mp.size());
-        int i = 0;
-        for(auto& [x,y]:mp){
-            ans[i] = (y);
-            i++;
-        }
-        return ans;
-    }
 };
