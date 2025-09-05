@@ -1,35 +1,34 @@
 class Solution {
 public:
     string minWindow(string s, string t) {
-        if(t.empty()) return "";
-        unordered_map<char,int> freq,window;
-
-        for(auto c:t) freq[c]++;
-
-        int have = 0;
+       
+        map<char,int> freq,window;
+        for(auto ch:t){
+            freq[ch]++;
+        }
         int need = freq.size();
-        int resLen = INT_MAX;
-        int l = 0;
-        int n = s.size();
-        pair<int,int> res={-1,-1};
-        for(int r = 0;r<n;r++){
-            char c = s[r];
-            window[c]++;
-            if(freq.count(c) && window[c]==freq[c]){
+        int have = 0;
+        int left = 0;
+        int ans = INT_MAX;
+        pair<int,int> res = {-1,-1};
+        for(int right = 0;right<s.size();right++){
+            char ch = s[right];
+            window[ch]++;
+            if(freq.count(ch)&&freq[ch]==window[ch]){
                 have++;
-            }
+            }       
             while(have==need){
-                if((r-l+1)<resLen){
-                    resLen = r-l+1;
-                    res = {l,r};
+                if((right-left+1)<ans){
+                    ans = right-left+1;
+                    res = {left,right};
                 }
-                window[s[l]]--;
-                if(freq.count(s[l])&&window[s[l]]<freq[s[l]]){
+                window[s[left]]--;
+                if(freq.count(s[left])&&window[s[left]]<freq[s[left]]){
                     have--;
                 }
-                l++;
+                left++;
             }
         }
-        return resLen==INT_MAX?"":s.substr(res.first,resLen);
+        return ans==INT_MAX?"":s.substr(res.first,ans);
     }
 };
