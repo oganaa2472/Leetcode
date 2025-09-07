@@ -11,23 +11,41 @@
 class Solution {
 public:
     ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
-        ListNode* dummy = new ListNode();
-        ListNode* cur = dummy;
-        int carry = 0;
-        while (l1 != nullptr || l2 != nullptr || carry != 0) {
-            int v1 = (l1 != nullptr) ? l1->val : 0;
-            int v2 = (l2 != nullptr) ? l2->val : 0;
-            int val = v1+v2+carry;
-            carry = val/10;
-            val = val%10;
-            cur->next = new ListNode(val);
-            cur=cur->next;
-            l1 = (l1 != nullptr) ? l1->next : nullptr;
-            l2 = (l2 != nullptr) ? l2->next : nullptr;
+        ListNode* dummy =new ListNode();
+        ListNode* head = dummy;
+        int extra = 0;
+        while(l1!=NULL&&l2!=NULL){
+            int val = l1->val + l2->val+ extra;
+            int cur = val%10;
+            extra = val/10;
+            ListNode* newNode =new ListNode(cur);
+            l1=l1->next;
+            l2=l2->next;
+            head->next = newNode;
+            head = head->next;
         }
-        ListNode* res = dummy->next;
-        delete dummy;
-        return res;
-
+        while(l1!=NULL){
+            int val = l1->val + extra;
+            int cur = val%10;
+            extra = val/10;
+            ListNode* newNode =new ListNode(cur);
+            l1=l1->next;
+            head->next = newNode;
+            head = head->next;
+        }
+        while(l2!=NULL){
+            int val = l2->val + extra;
+            int cur = val%10;
+            extra = val/10;
+            ListNode* newNode =new ListNode(cur);
+            l2=l2->next;
+            head->next = newNode;
+            head = head->next;
+        }
+        if(extra>0){
+            ListNode* newNode =new ListNode(extra);
+            head->next = newNode;
+        }
+        return dummy->next;
     }
 };
