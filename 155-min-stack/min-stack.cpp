@@ -8,13 +8,19 @@ public:
     
     void push(int val) {
         st.push(val);
-        val = min(val,minStack.empty()?val:minStack.top());
-        minStack.push(val);
+        if(minStack.empty()){
+            minStack.push(val);
+        }else{
+            int top = minStack.top();
+            int minEl = min(val,top);
+            minStack.push(minEl);
+        }
     }
     
     void pop() {
-        st.pop();
         minStack.pop();
+        st.pop();
+        
     }
     
     int top() {
