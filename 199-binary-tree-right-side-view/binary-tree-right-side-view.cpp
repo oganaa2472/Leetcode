@@ -1,34 +1,27 @@
-#include <iostream>
-#include <vector>
-#include <queue>
-using namespace std;
-
-
 class Solution {
 public:
     vector<int> rightSideView(TreeNode* root) {
-        vector<int> rightView;
-        if (!root) return rightView;  // Empty tree
+        if(!root) return {};  // handle null root
 
-        queue<TreeNode*> q;
-        q.push(root);
+        queue<pair<TreeNode*,int>> q;
+        q.push({root,0});
+        map<int,int> mp;  // use map to keep levels sorted
 
-        while (!q.empty()) {
-            int levelSize = q.size();
-            TreeNode* node = nullptr;
-            // Traverse all nodes of the current level
-            for (int i = 0; i < levelSize; ++i) {
-                node = q.front();
-                q.pop();
-                
-                // Push left and right children of current node if they exist
-                if (node->left) q.push(node->left);
-                if (node->right) q.push(node->right);
+        while(!q.empty()){
+            auto [node, level] = q.front();
+            q.pop();
+
+            if(node){  // check null
+                mp[level] = node->val;  // overwrite with rightmost node at this level
+                if(node->left) q.push({node->left, level+1});
+                if(node->right) q.push({node->right, level+1});
             }
-            // Add the last node seen on this level to the right view
-            if (node) rightView.push_back(node->val);
         }
 
-        return rightView;
+        vector<int> answer;
+        for(auto [level, val] : mp){  // correct naming
+            answer.push_back(val);
+        }
+        return answer;
     }
 };
