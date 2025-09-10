@@ -11,7 +11,7 @@ public:
         auto lower = intervals.upper_bound(startTime);
         // find nearest end time;
         if(lower!=intervals.end()){
-            cout<<lower->first<<" "<<lower->second<<endl;
+            // cout<<lower->first<<" "<<lower->second<<endl;
             int nearestStart = lower->second;
             int duration = endTime-startTime;
             if(duration+startTime>nearestStart){
