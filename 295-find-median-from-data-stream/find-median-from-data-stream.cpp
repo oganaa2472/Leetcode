@@ -1,27 +1,35 @@
 class MedianFinder {
 public:
-    priority_queue<int> mx;
-    priority_queue<int,vector<int>,greater<int>> mn;
+    std::priority_queue<int> maxHeap; // Max heap for the lower half
+    // 1 2 3 
+    std::priority_queue<int, std::vector<int>, std::greater<int>> minHeap; 
+    // 6 5 3
+    // Min heap for the upper half
+
+    // 1,2,3,4
+    // max: 1 2
+    // min: 4 3
     MedianFinder() {
-        
+       
+
     }
-    
+    //2 3   345
     void addNum(int num) {
-        mx.push(num);
-        mn.push(mx.top());
-        mx.pop();
-        if(mn.size()>mx.size()){
-            mx.push(mn.top());
-            mn.pop();
+         maxHeap.push(num); 
+        minHeap.push(maxHeap.top()); 
+        maxHeap.pop();
+        if(minHeap.size()>maxHeap.size()){
+            maxHeap.push(minHeap.top());
+            minHeap.pop();
         }
     }
     
     double findMedian() {
-        double answer = 0;
-        int n = mx.size();
-        int m = mn.size();
-        if((n+m)%2) return mx.top();
-        else return double(mx.top()+mn.top())/2;
+        int m = minHeap.size();
+        int n = maxHeap.size();
+        if(n==m){
+            return (maxHeap.top() + minHeap.top()) / 2.0;
+        }else return maxHeap.top();
     }
 };
 
