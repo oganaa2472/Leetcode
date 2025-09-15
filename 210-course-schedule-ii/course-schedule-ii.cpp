@@ -1,37 +1,33 @@
 class Solution {
 public:
-    vector<int> findOrder(int numCourses, vector<vector<int>>& edges) {
+    vector<int> findOrder(int numCourses, vector<vector<int>>& prerequisites) {
         vector<vector<int>> adj(numCourses);
-        for(int i = 0;i<edges.size();i++){
-            adj[edges[i][0]].push_back(edges[i][1]);
+        // Array to track indegrees of each node
+        vector<int> indegree(numCourses, 0);
+
+        for (const auto& pre : prerequisites) {
+            adj[pre[1]].push_back(pre[0]);
+            ++indegree[pre[0]];
         }
-        vector<int> indegree(numCourses,0);
-        for(int i = 0;i<numCourses;i++){
-            for(auto it:adj[i]){
-                indegree[it]++;
+        queue<int> q; // Queue of courses with zero in-degree
+        for (int i = 0; i < numCourses; ++i) {
+            if (indegree[i] == 0) {
+                q.push(i);
             }
         }
-        queue<int> q;
-       
-		for (int i = 0; i < numCourses; i++) {
-			if (indegree[i] == 0) {
-				q.push(i);
-			}
-		}
-        vector<int> topo;
+        vector<int> order;
         while(!q.empty()){
-            int front = q.front();
-            topo.push_back(front);
+            int node = q.front();
             q.pop();
-            for(int u:adj[front]){
-                indegree[u]--;
-                if(indegree[u]==0) q.push(u);
+            order.push_back(node);
+            for(auto v:adj[node]){
+                indegree[v]--;
+                if(indegree[v]==0){
+                    q.push(v);
+                }
             }
         }
-        if(topo.size()==numCourses){
-            reverse(topo.begin(),topo.end());
-            return topo;
-        }
-        return {};
+        return (order.size() == numCourses) ? order : vector<int>{};
+
     }
 };
