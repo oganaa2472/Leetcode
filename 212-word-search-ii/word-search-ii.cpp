@@ -33,7 +33,6 @@ public:
         Trie trie;
         for(string& w : words) trie.insert(w);
         set<string> result;
-        
         int m = board.size();
         int n = board[0].size();
         
@@ -45,7 +44,6 @@ public:
                 dfs(board, visited, i, j, trie.root, path, result);
             }
         }
-        
         return vector<string>(result.begin(), result.end());
     }
     
