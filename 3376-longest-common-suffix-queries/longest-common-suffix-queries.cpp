@@ -1,106 +1,85 @@
-class TrieNode {
-public:
-    TrieNode* children[26];
+#include <bits/stdc++.h>
+using namespace std;
+
+struct TrieNode {
+    bool isEnd;
+    int children[26];
     int index;
+    int len;
+
     TrieNode() {
-        for(int i = 0; i < 26; i++) {
-            children[i] = NULL;
-        }
-        index = -1;
+        isEnd = false;
+        index = INT_MAX;
+        len = INT_MAX;
+        for (int i = 0; i < 26; i++) children[i] = -1;
     }
 };
 
 class Trie {
 public:
-    TrieNode* root;
-    vector<int> ans;
+    vector<TrieNode> pool;  // pool of nodes
+    int root;
 
     Trie() {
-        root = new TrieNode();
+        
+        pool.push_back(TrieNode());
+        root = 0;
     }
 
-    // 1) Destructor to free all allocated nodes
-    ~Trie() {
-        freeTrie(root);
-    }
-
-    void insertword(string &word, int ind, vector<string>& wordsContainer) {
-        TrieNode* node = root;
-        for(int i = (int)word.size() - 1; i >= 0; i--) {
-            int indexChar = word[i] - 'a';
-            if(node->children[indexChar] == NULL) {
-                node->children[indexChar] = new TrieNode();
-                node->children[indexChar]->index = ind;
+    void insert(const string& word, int wordIndex) {
+        int node = root;
+        for (char ch : word) {
+            int ci = ch - 'a';
+            if (pool[node].children[ci] == -1) {
+                pool[node].children[ci] = pool.size();
+                pool.push_back(TrieNode());
             }
-            node = node->children[indexChar];
-            int prevIndex = node->index;
-            int newIndex = ind;
-            if(wordsContainer[newIndex].size() < wordsContainer[prevIndex].size()) {
-                node->index = newIndex;
+            int nxt = pool[node].children[ci];
+            if (word.size() < pool[nxt].len) {
+                pool[nxt].len = word.size();
+                pool[nxt].index = wordIndex;
             }
+            node = nxt;
         }
+        pool[node].isEnd = true;
     }
 
-    void search(string &word, int freeIndex) {
-        TrieNode* node = root;
-        int s = (int)word.size();
-        if(node->children[word[s - 1] - 'a'] == NULL) {
-            ans.push_back(freeIndex);
-            return;
-        } else {
-            for(int i = s - 1; i >= 0; i--) {
-                int indexChar = word[i] - 'a';
-                if(node->children[indexChar] == NULL) {
-                    ans.push_back(node->index);
-                    return;
-                }
-                node = node->children[indexChar];
-            }
-            ans.push_back(node->index);
+    int search(const string& word) {
+        int node = root;
+        for (char c : word) {
+            int ci = c - 'a';
+            if (pool[node].children[ci] == -1) return pool[node].index;
+            node = pool[node].children[ci];
         }
-    }
-
-private:
-    // 2) Helper function to recursively free all TrieNodes
-    void freeTrie(TrieNode* node) {
-        if(!node) return;
-        for(int i = 0; i < 26; i++) {
-            if(node->children[i]) {
-                freeTrie(node->children[i]);
-            }
-        }
-        delete node;
+        return pool[node].index;
     }
 };
 
 class Solution {
 public:
-    vector<int> stringIndices(vector<string>& wordsContainer, vector<string>& wordsQuery) {
-        Trie* tr = new Trie();
-        int n = (int)wordsContainer.size();
+    vector<int> stringIndices(vector<string>& wordsContainer, vector<string>& wordsQuery) { 
+        Trie trie;
+        int mn = INT_MAX;
+        int minIndex = -1;
 
-        for(int i = 0; i < n; i++) {
-            tr->insertword(wordsContainer[i], i, wordsContainer);
-        }
-
-        // Find the index of the smallest word
-        int em = 0;
-        int size = INT_MAX;
-        for(int p = 0; p < n; p++) {
-            if((int)wordsContainer[p].size() < size) {
-                size = (int)wordsContainer[p].size();
-                em = p;
+        // Insert all container words (reversed)
+        for (int i = 0; i < (int)wordsContainer.size(); i++) {
+            reverse(wordsContainer[i].begin(), wordsContainer[i].end());
+            if ((int)wordsContainer[i].size() < mn) {
+                mn = wordsContainer[i].size();
+                minIndex = i;
             }
-        }
-        cout << em << endl; // if required for debugging
+            trie.insert(wordsContainer[i], i);
+        }   
 
-        int m = (int)wordsQuery.size();
-        for(int i = 0; i < m; i++) {
-            tr->search(wordsQuery[i], em);
-        }
+        int n = wordsQuery.size();
+        vector<int> ans(n, -1);
 
-        vector<int> result = tr->ans;
-        delete tr;  // Free the Trie (calls ~Trie()) to release memory
-        return result;
+        for (int i = 0; i < n; i++) {
+            reverse(wordsQuery[i].begin(), wordsQuery[i].end());
+            int t = trie.search(wordsQuery[i]);
+            ans[i] = (t == INT_MAX ? minIndex : t);
+        }
+        return ans;
     }
 };
