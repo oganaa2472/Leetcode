@@ -1,41 +1,47 @@
-class Solution {
-public:
-    vector<int> height;
-    vector<int> parent;
-    int find_set(int v) {
-        if (v == parent[v])
-            return v;
-        return parent[v] = find_set(parent[v]);
-    }
-    void unionFind(int a,int b){
-        
-        if (height[a] < height[b])
-            swap(a, b);
-        parent[b] = a;
-        if (height[a] == height[b])
-        height[a]++;
-        
-    }
-
-
-    vector<int> findRedundantConnection(vector<vector<int>>& edges) {
-        int n = edges.size();
-        parent.resize(n+1,0);
-        height.resize(n+1,0);
-        for(int i=1;i<=n;i++){
+struct DSU{
+    vector<int> parent, size;
+    int num_sets;
+    DSU(int n){
+        size.resize(n+1,1);
+        parent.resize(n+1,-1);
+        for(int i = 0;i<=n;i++){
             parent[i] = i;
         }
-        for(int i = 0;i<edges.size();i++){
-             int a = find_set(edges[i][0]);
-             int b = find_set(edges[i][1]);
-             if(a==b){
-                return {edges[i][0],edges[i][1]};
-             }
-             unionFind(a,b);
-        }
-        return {};
-
+        num_sets=n;
     }
- 
-
+    int find(int x){
+        if(parent[x]==x) return x;
+        return parent[x] = find(parent[x]);
+    }
+    bool unite(int a,int b){
+        a = find(a);
+        b = find(b);
+        if(a==b) return false;
+        if(size[a]<size[b]) swap(a,b);
+        parent[b] = a;
+        size[a]+=size[b];
+        num_sets--;
+        return true;
+    }
+    int count() const {
+        return num_sets;
+    }
+};
+class Solution {
+public:
+    vector<int> findRedundantConnection(vector<vector<int>>& edges) {
+        int n = edges.size();
+        DSU dsu(n);
+        for(auto edge:edges){
+            int u = edge[0];
+            int v = edge[1];
+            int a = dsu.find(u);
+            int b = dsu.find(v);
+            if(a==b){
+                return {u,v};
+            }
+            dsu.unite(u,v);
+        }
+        return {-1,-1};
+    }
 };
