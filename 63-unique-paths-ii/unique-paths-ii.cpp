@@ -1,22 +1,21 @@
 class Solution {
 public:
-    int n,m;
-    vector<vector<int>> dp;
-    int solve(int i,int j,vector<vector<int>>&grid){
-        if(i>=n||j>=m||grid[i][j]==1) return 0;
-        if(i==n-1&&j==m-1){
-            return 1;
-        }   
-        if(dp[i][j]!=-1) return dp[i][j];
-      
-        return dp[i][j] =(solve(i + 1, j, grid)+solve(i, j + 1, grid));
+    int uniquePathsWithObstacles(vector<vector<int>>& obstacleGrid) {
+        int m = obstacleGrid.size();
+        int n = obstacleGrid[0].size();
+        vector<int> dp(n, 0);
+        dp[0] = obstacleGrid[0][0] == 0 ? 1 : 0;
         
+        for (int i = 0; i < m; ++i) {
+            for (int j = 0; j < n; ++j) {
+                if (obstacleGrid[i][j] == 1) {
+                    dp[j] = 0;
+                } else if (j > 0) {
+                    dp[j] += dp[j - 1];
+                }
+            }
+        }
         
-    }
-    int uniquePathsWithObstacles(vector<vector<int>>& grid) {
-         n = grid.size();
-         m = grid[0].size();
-        dp.assign(n+1,vector<int>(m+1,-1));
-        return solve(0,0,grid);
+        return dp[n - 1];
     }
 };
