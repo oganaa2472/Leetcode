@@ -9,13 +9,13 @@ public:
 
         if (dp[mask][remainingTime] != -1) return dp[mask][remainingTime];
 
-        int ans = n + 1; 
-        for (int i = 0; i < n; i++) {
-            if ((mask & (1 << i)) == 0) { // If task `i` is not taken
-                if (tasks[i] <= remainingTime) {
-                    ans = min(ans, solve(mask | (1 << i), remainingTime - tasks[i]));
-                } else {
-                    ans = min(ans, 1 + solve(mask | (1 << i), sessionTime - tasks[i]));
+        int ans = n+1;
+        for(int i = 0;i<n;i++){
+           if ((mask & (1 << i)) == 0) { 
+                if(remainingTime>=tasks[i]){
+                    ans = min(ans,solve((1<<i)|mask,remainingTime-tasks[i]));
+                }else{
+                    ans = min(ans,1+solve((1<<i)|mask,sessionTime-tasks[i]));
                 }
             }
         }
