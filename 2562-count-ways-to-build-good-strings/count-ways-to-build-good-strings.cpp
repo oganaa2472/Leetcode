@@ -1,18 +1,26 @@
 class Solution {
 public:
-    int mod = 1e9+7;
-    unordered_map<int,int> dp;
+    const int MOD = 1e9 + 7;
+    int zeroLen, oneLen;
+    vector<int> memo;
 
-    int solve(int low,int high,int zero,int one,int len){
-        if(len>high) return 0;
-        if(dp.find(len)!=dp.end()) return dp[len];
-    
-       int res = (len >= low && len <= high) ? 1 : 0;
-        res += (solve(low,high,zero,one,len + zero))+
-            (solve(low,high,zero,one,len + one));
-        return dp[len] = (res)%mod;
+    int dfs(int i, int low, int high) {
+        if (i > high) return 0;
+        if (memo[i] != -1) return memo[i];
+
+        long long res = 0;
+        if (i >= low && i <= high) res = 1;  // count this valid length
+
+        res = (res + dfs(i + zeroLen, low, high)) % MOD;
+        res = (res + dfs(i + oneLen, low, high)) % MOD;
+
+        return memo[i] = res;
     }
+
     int countGoodStrings(int low, int high, int zero, int one) {
-        return solve(low,high,zero,one,0);
+        zeroLen = zero;
+        oneLen = one;
+        memo.assign(high + 1, -1);
+        return dfs(0, low, high);
     }
 };
