@@ -1,27 +1,27 @@
 class Solution {
 public:
-    unordered_set<string> dict;
-    unordered_map<int,int> dp;
-    int n;
-    string s;
-    int solve(int start){
-        if(start==n) return 0;
-        if(dp.count(start)) return dp[start];
-        int ans=solve(start+1)+1;
-         for (int i = start; i < n; i++) {
-                string curr = s.substr(start, i - start + 1);
-            if (dict.count(curr)) {
-                ans = min(ans, solve(i + 1));
+    unordered_map<string,int> memo;
+    int solve(string s,unordered_set<string>& word){
+        int n = s.size();
+
+        if(s.empty()) return 0; 
+        if(memo.count(s)) return memo[s];
+        int res = INT_MAX;
+        string first = "";
+
+        for(int i = 0;i<n;i++){
+            first+=s[i];
+            res = min(res,(int)first.size()+solve(s.substr(i+1),word));
+            if(word.count(first)){
+                res= min(res,solve(s.substr(i+1),word));
             }
         }
-        return dp[start] = ans;
+        return memo[s] = res;
     }
     int minExtraChar(string s, vector<string>& dictionary) {
-        n = s.size();
-        this->s=s;
-        for(auto& d:dictionary){
-            dict.insert(d);
-        }
-        return solve(0);
+        unordered_set<string> word(dictionary.begin(),dictionary.end());
+
+        return solve(s,word);
+        
     }
 };
