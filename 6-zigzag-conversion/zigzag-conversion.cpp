@@ -11,22 +11,20 @@ public:
         int direction = -1;
 
         int row = 0;
-        vector<char> res[numRows];
+        vector<string> res(numRows,"");
 
-        for(auto c:s){
-            res[row].push_back(c);
+        for(int i = 0;i<s.size();i++){
 
             if(row==0||row==numRows-1){
                 direction *=-1;
             }
+            res[row]+=s[i];
             row=row+direction;
         }
-        string result = "";
-        for(auto x:res){
-            for(auto y:x){
-                result = result + y;
-            }
-        }
-        return result;
+        string ans;
+
+        for(auto &it : res) ans += it; 
+
+        return ans;
     }
 };
