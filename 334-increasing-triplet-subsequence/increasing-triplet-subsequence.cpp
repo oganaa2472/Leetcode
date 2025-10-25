@@ -1,17 +1,21 @@
 class Solution {
 public:
     bool increasingTriplet(vector<int>& nums) {
-        vector<int> tails;
+        int first = INT_MAX;
+        int second = INT_MAX;
 
-        for (int x : nums) {
-            // find position to replace using binary search
-            auto it = lower_bound(tails.begin(), tails.end(), x);
-            if (it == tails.end())
-                tails.push_back(x);   // extend LIS
-            else
-                *it = x;              // replace with smaller tail
+        for (int num : nums) {
+            if (num <= first) {
+                // Found a new minimum value
+                first = num;
+            } else if (num <= second) {
+                // Found a number larger than `first` but smaller than `second`
+                second = num;
+            } else {
+                // Found a number larger than both `first` and `second`
+                return true;
+            }
         }
-
-    return (int)tails.size()>=3;
+        return false;
     }
 };
