@@ -1,34 +1,32 @@
 class Solution {
 public:
-    string s;
-    vector<vector<vector<int>>> dp;
-    int solve(int i ,int j,int k){
-        if(i==j) return 1;
-        if(i>j) return 0;
-        if(dp[i][j][k]!=-1) return dp[i][j][k];
+    
+     vector<vector<vector<int>>> dp;
+    int solve(int left, int right, int k, string &s) {
+        if (left > right) return 0;
+        if (left == right) return 1;
 
-        int diff = min(abs(s[i]-s[j]),26-abs(s[i]-s[j]));
-        if(s[i]==s[j]){
-            dp[i][j][k] = 2+ solve(i+1,j-1,k);
-        }
-        if(diff>k){
-            int inc = solve(i+1,j,k);
-            int exc = solve(i,j-1,k);
-            return dp[i][j][k] = max(inc,exc);
-        }
-        else{
-            int inc =2 + solve(i+1,j-1,k-diff);
-            // int exc =1+ solve(i,j-1,k-diff);
-            int a = solve(i+1,j,k);
-            int b = solve(i,j-1,k);
-            return dp[i][j][k] = max({inc,a,b});
+       if(dp[left][right][k]!=-1) return dp[left][right][k];
+
+        int f1 = solve(left + 1, right, k, s);
+        int f2 = solve(left, right - 1, k, s);
+        int inc = 0;
+
+        if (s[left] == s[right]) {
+            inc = solve(left + 1, right - 1, k, s) + 2;
+        } else {
+            int diff = abs((s[left] - s[right] + 26) % 26);
+            int count = min(diff, 26 - diff);
+            if (count <= k)
+                inc = solve(left + 1, right - 1, k - count, s) + 2;
         }
 
+        return dp[left][right][k] = max({f1, f2, inc});
     }
+
     int longestPalindromicSubsequence(string s, int k) {
         int n = s.size();
-        this->s = s;
         dp.resize(n+1,vector<vector<int>>(n+1,vector<int>(k+1,-1)));
-        return solve(0,n-1,k);
+        return solve(0, s.size() - 1, k, s);
     }
 };
