@@ -1,1 +1,1 @@
-<h2>longest-common-subsequence Notes</h2><hr>[ Time taken: 11 m 59 s ]
+<h2>longest-common-subsequence Notes</h2><hr>[ Time taken: 2 m 59 s ]
