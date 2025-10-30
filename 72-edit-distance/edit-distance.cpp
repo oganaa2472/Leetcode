@@ -1,28 +1,33 @@
 class Solution {
 public:
-    vector<vector<int>> dp;
-    int n,m;
-
-    int solve(int i,int j,string& word1,string& word2){
-          if (i == n) return m - j; 
-        if (j == m) return n - i;  
-        
-        if (dp[i][j] != -1) return dp[i][j];
-
-        if (word1[i] == word2[j]) {
-            return dp[i][j] = solve(i+1, j+1, word1, word2); 
-        } else {
-            return dp[i][j] = 1 + min({
-                solve(i+1, j, word1, word2),  
-                solve(i, j+1, word1, word2),   
-                solve(i+1, j+1, word1, word2)   
-            });
+    int solve(int i,int j, string& t1,string& t2,vector<vector<int>>& dp){
+        int n = t1.size();
+        int m = t2.size();
+        // base case
+        if(i==n){
+            return m-j;
         }
-    }
-    int minDistance(string word1, string word2) {
+        if(j==m){
+            return n - i;
+        }
 
-        n = word1.size(), m = word2.size();
-        dp.resize(n, vector<int>(m, -1));  // 0-based тул `dp[n][m]` биш `dp[n-1][m-1]`
-        return solve(0, 0, word1, word2);
+        if(dp[i][j]!=-1) return dp[i][j];
+
+        if(t1[i]==t2[j]){
+            return dp[i][j] = solve(i+1,j+1,t1,t2,dp);
+        }
+        return dp[i][j] = 1 + min({
+                solve(i+1, j, t1, t2,dp),  
+                solve(i, j+1, t1, t2,dp),   
+                solve(i+1, j+1, t1, t2,dp)   
+            });
+        
+    }
+    int minDistance(string text1, string text2) {
+        int n = text1.size();
+        int m = text2.size();
+
+        vector<vector<int>> dp(n+1,vector<int>(m+1,-1));
+        return solve(0,0,text1,text2,dp);
     }
 };
