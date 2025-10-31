@@ -1,32 +1,24 @@
 class Solution {
 public:
     vector<vector<int>> dp;
-    vector<int> nums;
-    int solve(int i,int j){
-        if(i>j) return 0;
-
-        if(dp[i][j]!=-1) return dp[i][j];
-
-        int maxBalloons = 0;
-
-       for (int k = i; k <= j; k++) {
-            int coins = nums[i - 1] * nums[k] * nums[j + 1]; 
-            int leftCoins = solve(i, k - 1); 
-            int rightCoins = solve(k + 1, j); 
-            
-            maxBalloons = max(maxBalloons, leftCoins + coins + rightCoins);
+    int solve(int left,int right,vector<int>& nums){
+        if(left>right) return 0;
+         if (dp[left][right] != -1) return dp[left][right];
+        int ans = 0;
+        for(int k = left;k<=right;k++){
+            int cost = nums[left-1]*nums[k]*nums[right+1];
+            int curLeft = solve(left,k-1,nums);
+            int curRight = solve(k+1,right,nums);
+            ans = max(cost+curLeft+curRight,ans);
         }
-        return dp[i][j] = maxBalloons;
+        return dp[left][right]=ans;
     }
-
     int maxCoins(vector<int>& nums) {
-         int n = nums.size();
-        nums.insert(nums.begin(), 1);
+
         nums.push_back(1);
-        this->nums = nums;
-        dp.resize(n+2,vector<int>(n+2,-1));
-
-        return solve(1,n);
-
+        nums.insert(nums.begin(),1);
+        int n = nums.size();
+        dp.assign(n + 2, vector<int>(n + 2, -1));
+        return solve(1,n-2,nums);
     }
 };
