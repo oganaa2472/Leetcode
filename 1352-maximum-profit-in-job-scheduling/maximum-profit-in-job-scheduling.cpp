@@ -1,9 +1,14 @@
 class Solution {
 public:
-    int n;
+     int n;
     vector<vector<int>> events;
     vector<int> dp;
-
+    bool comp(pair<int,int>& a,pair<int,int>& b){
+        if(a.first==b.first){
+            return a.second>b.second;
+        }
+        return a.first<b.first;
+    }
     int lowerBound(int i) {
         int left = i + 1, right = n - 1, ans = n;
         while (left <= right) {
@@ -17,16 +22,13 @@ public:
         }
         return ans;
     }
-
-    int solve(int i) {
-        if (i == n) return 0;
+    int solve(int i ){
+        if(i==n) return 0;
         if (dp[i] != -1) return dp[i];
-
-        int notPick = solve(i + 1); 
+        int exc = solve(i+1);
         int nextIndex = lowerBound(i); 
-        int pick = events[i][2] + solve(nextIndex);
-
-        return dp[i] = max(pick, notPick);
+        int inc = events[i][2] + solve(nextIndex);
+        return dp[i] = max(exc, inc);
     }
 
     int jobScheduling(vector<int>& startTime, vector<int>& endTime, vector<int>& profit) {
