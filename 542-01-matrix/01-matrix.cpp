@@ -1,44 +1,41 @@
 class Solution {
 public:
-    vector<pair<int, int>> directions {{1, 0}, {0, 1}, {-1, 0}, {0, -1}};
-    
     vector<vector<int>> updateMatrix(vector<vector<int>>& mat) {
-        int n = mat.size();
-        int m = mat[0].size();
-        vector<vector<int>> answer(n, vector<int>(m, INT_MAX)); 
+        int rows = mat.size();
+        int cols = mat[0].size();
+        vector<vector<int>> dist(rows, vector<int>(cols));
         queue<pair<int, int>> q;
-
-       
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
+        
+        // Initialize the distances and add all zero cells to the queue
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
                 if (mat[i][j] == 0) {
+                    dist[i][j] = 0;
                     q.push({i, j});
-                    answer[i][j] = 0;
+                } else {
+                    dist[i][j] = INT_MAX;
                 }
             }
         }
-        while(!q.empty()){
-            int cx = q.front().first;
-            int cy = q.front().second;
+         // Define the directions for exploring adjacent cells (up, down, left, right)
+        vector<pair<int, int>> directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+        while (!q.empty()) {
+            auto cell = q.front();
             q.pop();
-
-            for (auto dir : directions) {
-                int tx = cx + dir.first;
-                int ty = cy + dir.second;
-
-               
-                if (tx >= 0 && ty >= 0 && tx < n && ty < m) {
-                    if (answer[tx][ty] > answer[cx][cy] + 1) {
-                        answer[tx][ty] = answer[cx][cy] + 1;
-                        q.push({tx, ty});
+            int i = cell.first;
+            int j = cell.second;
+            for (const auto& dir : directions) {
+                int r = i + dir.first;
+                int c = j + dir.second;
+                if (r >= 0 && r < rows && c >= 0 && c < cols) {
+                    if (dist[r][c] > dist[i][j] + 1) {
+                        dist[r][c] = dist[i][j] + 1;
+                        q.push({r, c});
                     }
                 }
             }
+           
         }
-        return answer;
-
-        
-       
-        return answer;
+        return dist;
     }
 };
