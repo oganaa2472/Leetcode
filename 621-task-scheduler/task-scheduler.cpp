@@ -1,34 +1,45 @@
 class Solution {
 public:
     int leastInterval(vector<char>& tasks, int n) {
-        map<char,int> freq;
-        for(auto c:tasks) freq[c]++;
-        priority_queue<int> pq;
-        for(auto [c,cnt]:freq){
-            pq.push(cnt);
-        }   
-        int time = 0;
-        int cycle = n+1;
-        while(!pq.empty()){        
-            vector<int> store;
-            cycle = n+1;
-            int taskCount= 0;
-            while(cycle>0&&!pq.empty()){
-                cycle--;
-                if(pq.top()>1)
-                    store.push_back(pq.top()-1);
-                pq.pop();
-                taskCount++;
-            }
+        unordered_map<char, int> frequencyMap;
         
-            for(int i = 0;i<store.size();i++){
-                pq.push(store[i]);
-            }
-            if(!pq.empty()) time+=n+1;
-            else time+= taskCount;
+        // Step 1: Count the frequency of each task
+        for (char task : tasks) {
+            frequencyMap[task]++;
         }
-        return time;
 
+        // Step 2: Initialize a max heap based on task frequencies
+        priority_queue<int> maxHeap;
+        for (auto& entry : frequencyMap) {
+            maxHeap.push(entry.second);
+        }
+
+        // This queue will track tasks in their cooldown period
+        queue<pair<int, int>> cooldownQueue;
         
+        int time = 0;
+
+        // Step 3: Simulate the time units
+        while (!maxHeap.empty() || !cooldownQueue.empty()) {
+            time++;
+            
+            if (!maxHeap.empty()) {
+                int currentTaskFreq = maxHeap.top() - 1;  // Execute task with max frequency
+                maxHeap.pop();
+                
+                if (currentTaskFreq > 0) {
+                    // Task needs to cool down before re-invoking
+                    cooldownQueue.push({currentTaskFreq, time + n});
+                }
+            }
+
+            // Step 4: Check cooldown queue if any task is ready to re-enter the max heap
+            if (!cooldownQueue.empty() && cooldownQueue.front().second == time) {
+                maxHeap.push(cooldownQueue.front().first);
+                cooldownQueue.pop();
+            }
+        }
+
+        return time;
     }
 };
