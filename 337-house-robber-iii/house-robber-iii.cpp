@@ -11,16 +11,23 @@
  */
 class Solution {
 public:
-    pair<int,int> dfs(TreeNode* root){
-        if(root==NULL) return {0,0};
-        pair<int,int> leftPair = dfs(root->left);
-        pair<int,int> rightPair = dfs(root->right);
-        int withRoot = root->val + leftPair.second + rightPair.second;
-        int withoutRoot = max(leftPair.first,leftPair.second) +max(rightPair.first,rightPair.second);
-        return {withRoot,withoutRoot};
+    unordered_map<TreeNode*, int> memo;
+    int robDFS(TreeNode* node){
+        if(node==NULL) return 0;
+        if(memo.find(node)!=memo.end()) return memo[node];
+
+        int money = node->val;
+        if (node->left != nullptr) {
+            money += robDFS(node->left->left) + robDFS(node->left->right);
+        }
+        if (node->right != nullptr) {
+            money += robDFS(node->right->left) + robDFS(node->right->right);
+        }
+        int notRobbing = robDFS(node->left) + robDFS(node->right);
+        return memo[node] = max(money,notRobbing);
+        
     }
     int rob(TreeNode* root) {
-        pair<int,int> f= dfs(root);
-        return max(f.first,f.second);
+        return robDFS(root);
     }
 };
