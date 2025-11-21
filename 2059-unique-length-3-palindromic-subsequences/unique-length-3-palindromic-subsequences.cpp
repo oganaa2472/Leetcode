@@ -1,20 +1,32 @@
 class Solution {
 public:
     int countPalindromicSubsequence(string s) {
-        vector<pair<int, int>> v(26, {-1, -1});
-        for(int i = 0;i<s.size();i++){
-            if (v[s[i] - 'a'].first == -1) v[s[i] - 'a'].first = i;
-            else v[s[i] - 'a'].second = i;
-        }
-        int res = 0;
-        for (int i = 0; i < 26; i++) {
-            if (v[i].second != -1) {
-                unordered_set<char> tmp;
-                for (int j = v[i].first + 1; j < v[i].second; j++) tmp.insert(s[j]);
-                res += tmp.size();
+        map<char, int> firstOcc;
+        map<char, int> lastOcc;
+
+        // Record first and last occurrence
+        for (int i = 0; i < (int)s.size(); i++) {
+            lastOcc[s[i]] = i;
+            if (firstOcc.find(s[i]) == firstOcc.end()) {
+                firstOcc[s[i]] = i;
             }
         }
-        
-        return res;
+
+        int ans = 0;
+
+        // For each possible outer character C
+        for (auto [C, L] : firstOcc) {
+            int R = lastOcc[C];
+            set<char> middleChars;
+
+            // Count distinct middle characters X between L and R
+            for (int i = L + 1; i < R; i++) {
+                middleChars.insert(s[i]);
+            }
+
+            ans += (int)middleChars.size();
+        }
+
+        return ans;
     }
 };
