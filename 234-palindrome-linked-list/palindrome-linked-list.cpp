@@ -29,7 +29,7 @@ public:
             prev = temp;
         }
         while(prev!=NULL){
-            cout<<prev->val<<" ";
+            // cout<<prev->val<<" ";
             if(dummy->val!=prev->val) return false;
             prev=prev->next;
             dummy=dummy->next;
