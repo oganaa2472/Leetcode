@@ -34,7 +34,7 @@ public:
             prev=prev->next;
             dummy=dummy->next;
         }
-        cout<<endl;
+        
         return true;
 
     }
