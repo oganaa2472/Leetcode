@@ -1,29 +1,34 @@
+#include <bits/stdc++.h>
+using namespace std;
+
 class Solution {
 public:
+    int count = 0;
+    vector<vector<int>> memo;
+
+    bool isPalindrome(const string &s, int i, int j) {
+        if (i > j) return true; // empty substring
+        if (i == j) return true; // single char
+        if (memo[i][j] != -1) return memo[i][j];
+
+        bool res = (s[i] == s[j]) && isPalindrome(s, i+1, j-1);
+        memo[i][j] = res;
+        return res;
+    }
+
     int countSubstrings(string s) {
         int n = s.size();
-        int cnt = 0;
-        vector<vector<bool>> dp(n,vector<bool>(n,false));
-        for(int i = 0;i<n;i++){
-            dp[i][i] = true;
-            cnt++;
-        }
-        for(int i = 0;i<n-1;i++){
-            if(s[i]==s[i+1]){
-                dp[i][i+1] =true;
-                cnt++;
-            }
-        }
+        memo.assign(n, vector<int>(n, -1));
 
-        for(int len =3;len<=n;len++){
-            for(int i = 0;i<=n-len;i++){
-                int j = i+len-1;
-                if(s[i]==s[j]&&dp[i+1][j-1]){
-                    dp[i][j] = true;
-                    cnt++;
+        int ans = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = i; j < n; j++) {
+                if (isPalindrome(s, i, j)) {
+                    ans++;
                 }
             }
         }
-        return cnt;
+        return ans;
     }
 };
+
