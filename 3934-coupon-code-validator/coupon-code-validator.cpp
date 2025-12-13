@@ -6,9 +6,7 @@ public:
         for(char ch:word){
             
             if(isalpha(ch)){
-                str+=tolower(ch);
             }else if(isdigit(ch)||ch=='_'){
-                cnt++;
             }
             else return false;
         }
