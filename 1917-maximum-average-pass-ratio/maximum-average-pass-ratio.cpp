@@ -1,32 +1,37 @@
 class Solution {
 public:
+    double gain(int p, int t) {
+        return (double)(p + 1) / (t + 1) - (double)p / t;
+    }
     double maxAverageRatio(vector<vector<int>>& classes, int extraStudents) {
-        priority_queue<pair<double,pair<int,int>>> pq;
-        for(int i=0;i<classes.size();i++){
-            int n=classes[i][0];
-            int d=classes[i][1];
-            double change=(double)(n+1)/(d+1)-(double)n/d;
-            pq.push({change,{n,d}});
+        priority_queue<pair<double, pair<int,int>>> pq;
+
+        // Initialize heap
+        for (auto &c : classes) {
+            pq.push({gain(c[0], c[1]), {c[0], c[1]}});
         }
-        for(int i=0;i<extraStudents;i++){
-            auto [change,p]=pq.top();
+        while (extraStudents--) {
+            auto top = pq.top();
             pq.pop();
-            int n=p.first;
-            int d=p.second;
-            n++;
-            d++;
-            double newchange=(double)(n+1)/(d+1)-(double)n/d;
-            pq.push({newchange,{n,d}});
+
+            int p = top.second.first;
+            int t = top.second.second;
+
+            p++;
+            t++;
+
+            pq.push({gain(p, t), {p, t}});
         }
-        double passratio=0;
-        while(!pq.empty()){
-            auto [a,b]=pq.top();
+
+        // Compute final average
+        double sum = 0.0;
+        while (!pq.empty()) {
+            auto [g, pt] = pq.top();
             pq.pop();
-            int n=b.first;
-            int d=b.second;
-            passratio+=(double)n/d;
+            sum += (double)pt.first / pt.second;
         }
-        return passratio/classes.size();
-        
+
+        return sum / classes.size();
+
     }
 };
