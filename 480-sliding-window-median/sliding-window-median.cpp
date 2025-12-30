@@ -1,79 +1,88 @@
+#include <vector>
+#include <queue>
+#include <unordered_map>
+using namespace std;
+
 class Solution {
+private:
+    priority_queue<long long> maxHeap; // жижиг талын элементүүд
+    priority_queue<long long, vector<long long>, greater<long long>> minHeap; // том талын элементүүд
+    unordered_map<long long,int> delayed; // lazy removal
+
+    int smallSize = 0, largeSize = 0;
+
+    void pruneMaxHeap() {
+        while (!maxHeap.empty() && delayed[maxHeap.top()]) {
+            delayed[maxHeap.top()]--;
+            maxHeap.pop();
+        }
+    }
+
+    void pruneMinHeap() {
+        while (!minHeap.empty() && delayed[minHeap.top()]) {
+            delayed[minHeap.top()]--;
+            minHeap.pop();
+        }
+    }
+
+    void balance() {
+        if (smallSize > largeSize + 1) {
+            long long top = maxHeap.top(); maxHeap.pop();
+            smallSize--;
+            minHeap.push(top); largeSize++;
+            pruneMaxHeap();
+        } else if (smallSize < largeSize) {
+            long long top = minHeap.top(); minHeap.pop();
+            largeSize--;
+            maxHeap.push(top); smallSize++;
+            pruneMinHeap();
+        }
+    }
+
 public:
-    int n, windowSize;
-    multiset<long long> minHalf;
-    multiset<long long> maxHalf;
-
-void adding(long long value)
-{
-    int currentMedian = *minHalf.rbegin(); // current median which is largest
-    if (currentMedian < value)
-    {
-        maxHalf.insert(value);
-        // balance
-        if (maxHalf.size() > windowSize / 2)
-        {
-            minHalf.insert(*maxHalf.begin());
-            maxHalf.erase(maxHalf.find(*maxHalf.begin()));
-        }
-    }
-    else
-    {
-        minHalf.insert(value);
-        // balance
-        if (minHalf.size() > (windowSize + 1) / 2)
-        {
-            maxHalf.insert(*minHalf.rbegin());
-            minHalf.erase(minHalf.find(*minHalf.rbegin()));
-        }
-    }
-}
-
-void removing(long long value)
-{
-    if (maxHalf.find(value) != maxHalf.end())
-        maxHalf.erase(maxHalf.find(value));
-    else
-        minHalf.erase(minHalf.find(value));
-
-    // lower portion has become empty
-    if (minHalf.empty())
-    {
-        minHalf.insert(*maxHalf.begin());
-        maxHalf.erase(maxHalf.find(*maxHalf.begin()));
-    }
-}
-    // 2 4 5 6 7 
     vector<double> medianSlidingWindow(vector<int>& nums, int k) {
-       windowSize= k;
-       int n = nums.size();
-        minHalf.insert(nums[0]);
-        for (int i = 1; i < windowSize; i++)
-            adding(nums[i]);
+        vector<double> result;
 
-        vector<double> answer;
-        if(k%2==0){
-            double cur = double(*minHalf.rbegin()+*maxHalf.begin())/2;
-            answer.push_back(cur);
-        }else{
-            answer.push_back(*minHalf.rbegin());
-        }
-        
-        for(int i = windowSize;i<n;i++){
-            if(windowSize==1){
-                adding(nums[i]);
-                removing(nums[i-windowSize]);
-            }else{
-                removing(nums[i-windowSize]);
-                adding(nums[i]);
+        // Эхний цонх
+        for (int i = 0; i < k; i++) {
+            long long num = nums[i];
+            if (maxHeap.empty() || num <= maxHeap.top()) {
+                maxHeap.push(num);
+                smallSize++;
+            } else {
+                minHeap.push(num);
+                largeSize++;
             }
-             if(k%2==0){
-                double cur = double(*minHalf.rbegin()+*maxHalf.begin())/2;
-                answer.push_back(cur);
-            }else{
-                answer.push_back(*minHalf.rbegin());
-            }
+            balance();
         }
-        return answer;
+
+        // Эхний median
+        if (k % 2 == 1) result.push_back(maxHeap.top());
+        else result.push_back((maxHeap.top() + minHeap.top()) / 2.0);
+
+        // Цонхыг гүйлгэх
+        for (int i = k; i < nums.size(); i++) {
+            long long addNum = nums[i];
+            long long removeNum = nums[i - k];
+
+            // Шинэ элемент нэмэх
+            if (addNum <= maxHeap.top()) { maxHeap.push(addNum); smallSize++; }
+            else { minHeap.push(addNum); largeSize++; }
+
+            // Хуучин элементийг lazy remove
+            delayed[removeNum]++;
+            if (removeNum <= maxHeap.top()) smallSize--;
+            else largeSize--;
+
+            balance();
+            pruneMaxHeap();
+            pruneMinHeap();
+
+            // Median авах
+            if (k % 2 == 1) result.push_back(maxHeap.top());
+            else result.push_back((maxHeap.top() + minHeap.top()) / 2.0);
+        }
+
+        return result;
     }
 };
