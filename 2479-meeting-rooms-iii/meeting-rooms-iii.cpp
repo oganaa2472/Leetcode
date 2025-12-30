@@ -1,42 +1,37 @@
 class Solution {
 public:
-    int mostBooked(int n, vector<vector<int>>& meetings) {
-        vector<long long> roomAvailabilityTime(n, 0);
-        vector<int> meetingCount(n, 0);
-        sort(meetings.begin(), meetings.end());
+    int mostBooked(int rooms, vector<vector<int>>& meetings) {
+        sort(meetings.begin(),meetings.end());
+        priority_queue<int, vector<int>, greater<int>> available;
+    priority_queue<pair<long long,int>,
+        vector<pair<long long,int>>,
+        greater<pair<long long,int>>> busy;
+        for (int i = 0; i < rooms; i++) available.push(i);
 
-        for (auto& meeting: meetings) {
-            int start = meeting[0], end = meeting[1];
-            long long minRoomAvailabilityTime = LLONG_MAX;
-            int minAvailableTimeRoom = 0;
-            bool foundUnusedRoom = false;
+        vector<long long> count(rooms, 0);
 
-            for (int i = 0; i < n; i++) {
-                if (roomAvailabilityTime[i] <= start) {
-                    foundUnusedRoom = true;
-                    meetingCount[i]++;
-                    roomAvailabilityTime[i] = end;
-                    break;
-                }
-
-                if (minRoomAvailabilityTime > roomAvailabilityTime[i]) {
-                    minRoomAvailabilityTime = roomAvailabilityTime[i];
-                    minAvailableTimeRoom = i;
-                }
+        for (auto& m : meetings) {
+            long long start = m[0], end = m[1];
+            while (!busy.empty() && busy.top().first <= start) {
+                available.push(busy.top().second);
+                busy.pop();
             }
 
-            if (!foundUnusedRoom) {
-                roomAvailabilityTime[minAvailableTimeRoom] += end - start;
-                meetingCount[minAvailableTimeRoom]++;
+            if (!available.empty()) {
+                int room = available.top(); available.pop();
+                busy.push({end, room});
+                count[room]++;
+            }else{
+                auto [t, room] = busy.top(); busy.pop();
+                long long duration = end - start;
+                busy.push({t + duration, room});
+                count[room]++;
             }
         }
-        int maxMeetingCount = 0, maxMeetingCountRoom = 0;
-        for (int i = 0; i < n; i++) {
-            if (meetingCount[i] > maxMeetingCount) {
-                maxMeetingCount = meetingCount[i];
-                maxMeetingCountRoom = i;
+          int ans = 0;
+            for (int i = 1; i < rooms; i++) {
+                if (count[i] > count[ans]) ans = i;
             }
-        }
-        return maxMeetingCountRoom;
+            return ans;
     }
 };
