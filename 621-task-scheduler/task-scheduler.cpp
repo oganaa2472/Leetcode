@@ -1,27 +1,41 @@
 class Solution {
 public:
     int leastInterval(vector<char>& tasks, int n) {
-    vector<int> freq(26, 0);
-
-        // 1. Давтамж тоолох
+        vector<int> freq(26, 0);
         for (char c : tasks)
             freq[c - 'A']++;
 
-        // 2. Хамгийн их давтамж
-        int maxFreq = *max_element(freq.begin(), freq.end());
+        // Max heap of frequencies
+        priority_queue<int> maxHeap;
+        for (int f : freq)
+            if (f > 0)
+                maxHeap.push(f);
 
-        // 3. maxFreq-тэй task хэд байна
-        int countMax = 0;
-        for (int f : freq) {
-            if (f == maxFreq)
-                countMax++;
+        // Queue for cooling tasks: {remaining count, time when available}
+        queue<pair<int, int>> coolDown;
+
+        int time = 0;
+
+        while (!maxHeap.empty() || !coolDown.empty()) {
+            time++;
+            // Execute task if possible
+            if (!maxHeap.empty()) {
+                int cnt = maxHeap.top();
+                maxHeap.pop();
+                cnt--;
+
+                if (cnt > 0) {
+                    coolDown.push({cnt, time + n});
+                }
+            }
+
+            // Check if any task finished cooling
+            if (!coolDown.empty() && coolDown.front().second == time) {
+                maxHeap.push(coolDown.front().first);
+                coolDown.pop();
+            }
         }
 
-        // 4. Формула
-        int partCount = maxFreq - 1;
-        int partLength = n + 1;
-        int minIntervals = partCount * partLength + countMax;
-
-        return max((int)tasks.size(), minIntervals);
+        return time;
     }
 };
