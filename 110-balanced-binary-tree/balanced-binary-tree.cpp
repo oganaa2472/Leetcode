@@ -11,18 +11,16 @@
  */
 class Solution {
 public:
-    int isBal(TreeNode* root){
+    int dfs(TreeNode* root){
         if(root==NULL) return 0;
-        int left =isBal(root->left);
-        int right =isBal(root->right);
-
+        int left = dfs(root->left);
         if(left==-1) return -1;
+        int right = dfs(root->right);
         if(right==-1) return -1;
-        if(abs(left-right)>1) return -1;
-       
+        if(abs(right-left)>1) return -1;
         return 1+max(left,right);
     }
     bool isBalanced(TreeNode* root) {
-        return isBal(root)==-1?false:true;
+        return dfs(root)!=-1;
     }
 };
