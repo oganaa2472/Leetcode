@@ -1,33 +1,24 @@
-
 class Solution {
 public:
     long long countSubarrays(vector<int>& nums, int k, int m) {
-        long long ans = 0;
-        int n = nums.size();
-        int j1=-1,j2=-1,cnt = 0;
-        map<long long,long long> f1,f2;
-        for(int i = 0;i<n;i++){
-            while(j1<n&&f1.size()<k+1){
-                j1++;
-                if(j1<n){
-                    f1[nums[j1]]++;
-                }
+        long long res = 0;
+        int leftd = 0, leftv = 0, vcount = 0;
+        unordered_map<int, int> countd, countv;
+        
+        for (int right = 0; right < nums.size(); ++right) {
+            countd[nums[right]]++;
+            while (countd.size() > k) {
+                if (--countd[nums[leftd]] == 0) countd.erase(nums[leftd]);
+                leftd++;
             }
-            while(j2<n&&cnt<k){
-                j2++;
-                if(j2<n){
-                    f2[nums[j2]]++;
-                    if(f2[nums[j2]]==m) cnt++;
-                }
+
+            if (++countv[nums[right]] == m) vcount++;
+            while (vcount >= k) {
+                if (countv[nums[leftv]]-- == m) vcount--;
+                leftv++;
             }
-            if(j1>j2){
-                ans+=j1-j2;
-            }
-            f1[nums[i]]--;
-            if(!f1[nums[i]]) f1.erase(nums[i]);
-            f2[nums[i]]--;
-            if(f2[nums[i]]==m-1) cnt--;
+            if (leftv > leftd) res += (leftv - leftd);
         }
-        return ans;
+        return res;
     }
 };
