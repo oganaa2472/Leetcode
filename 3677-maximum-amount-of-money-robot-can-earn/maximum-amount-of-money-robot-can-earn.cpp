@@ -1,46 +1,46 @@
 class Solution {
 public:
-    int solve(int i, int j, vector<vector<int>>& coins, vector<vector<vector<int>>>& dp, int k) {
-        int n = coins.size();
-        int m = coins[0].size();
-
-        if (i >= n || j >= m) return INT_MIN; // Out of bounds
-
-        if (dp[i][j][k] != INT_MIN) return dp[i][j][k];
-
-        if (i == n - 1 && j == m - 1) { // Base case: bottom-right corner
-            if (coins[i][j] >= 0)
-                return dp[i][j][k] = coins[i][j];
-            else
-                return dp[i][j][k] = (k > 0 ? 0 : coins[i][j]);
-        }
-
-        int right = solve(i, j + 1, coins, dp, k);
-        int down = solve(i + 1, j, coins, dp, k);
-
-        int best = max(right, down);
-        int current = coins[i][j];
-
-        if (current >= 0) {
-            dp[i][j][k] = best + current;
-        } else {
-            int pay = best + current; // Robber steals coins
-            int skip = INT_MIN;
-            if(k>0){
-                int down1 = solve(i,j+1,coins,dp,k-1);
-                int right1 = solve(i+1,j,coins,dp,k-1);
-                skip = max(down1,right1);
-            }
-            dp[i][j][k] = max(pay, skip);
-        }
-
-        return dp[i][j][k];
-    }
-
     int maximumAmount(vector<vector<int>>& coins) {
-        int n = coins.size();
-        int m = coins[0].size();
-        vector<vector<vector<int>>> dp(n, vector<vector<int>>(m, vector<int>(3, INT_MIN)));
-        return solve(0, 0, coins, dp, 2);
+         int m=coins.size();
+        int n=coins[0].size();
+        vector<vector<vector<int>>> dp(m, vector<vector<int>>(n, vector<int>(3, INT_MIN)));
+
+        dp[0][0][0]=coins[0][0];
+        if (coins[0][0]<0) {
+            dp[0][0][1]=0; 
+            dp[0][0][2]=0;
+        } else {
+            dp[0][0][1]=dp[0][0][2]=coins[0][0];
+        }
+         for (int i=0; i<m; ++i) {
+            for (int j=0; j<n; ++j) {
+
+                for (int k=0; k<3; ++k) {
+                    if (i==0 && j==0) continue; 
+                
+                    if (i>0) {
+                        dp[i][j][k]=max(dp[i][j][k], dp[i-1][j][k]+coins[i][j]);
+                        if (coins[i][j]<0 && k>0) {
+                            dp[i][j][k]=max(dp[i][j][k],dp[i-1][j][k-1]); 
+                            
+                      
+                        }
+                    }
+                    if (j>0) {
+                     
+                        dp[i][j][k]=max(dp[i][j][k], dp[i][j-1][k]+coins[i][j]);
+                        if (coins[i][j]<0 && k>0)
+                        {
+                            dp[i][j][k]=max(dp[i][j][k], dp[i][j-1][k-1]); 
+                            
+                        }
+                    }
+                }
+               
+            }
+           
+            
+        }
+        return max({dp[m-1][n-1][0], dp[m-1][n-1][1], dp[m-1][n-1][2]});
     }
 };
