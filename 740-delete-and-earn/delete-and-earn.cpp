@@ -1,21 +1,36 @@
 class Solution {
 public:
-    
-    
-    int deleteAndEarn(vector<int>& nums) {
-        int n = 10001;
-        vector<int> sum(n, 0);
-        vector<int> dp(n, 0);
+    vector<int> points;
+    vector<int> memo;
+    int numPoints(int num) {
         
-        for(auto num:nums){
-            sum[num] += num;
-        }
-        dp[0] = 0;
-        dp[1] = sum[1];
+        if (num <= 0) return 0;
+        
+    
+        if (memo[num] != -1) return memo[num];
 
-        for(int i = 2;i<n;i++){
-            dp[i] = max(dp[i-2]+sum[i],dp[i-1]);
+
+        int skip = numPoints(num - 1);
+        
+        int take = points[num] + numPoints(num - 2);
+
+        return memo[num] = std::max(skip, take);
+    }
+    int deleteAndEarn(vector<int>& nums) {
+        
+        if (nums.empty()) return 0;
+
+        // Массив дахь хамгийн их тоог олно (үүгээр санамжийн хэмжээг тогтооно)
+        int max_num = *std::max_element(nums.begin(), nums.end());
+        
+        // Массивын хэмжээг max_num + 1-ээр зарлана
+        points.assign(max_num + 1, 0);
+        memo.assign(max_num + 1, -1);
+
+        // Тоо тус бүрийн нийт оноог тооцож хадгална
+        for (int num : nums) {
+            points[num] += num;
         }
-        return dp[n-1];
+        return numPoints(max_num);
     }
 };
