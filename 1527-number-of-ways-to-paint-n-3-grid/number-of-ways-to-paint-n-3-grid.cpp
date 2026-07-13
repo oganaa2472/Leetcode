@@ -1,18 +1,23 @@
 class Solution {
 public:
     int numOfWays(int n) {
-        const int MOD = 1e9 + 7;
-
-        long long dpA = 6; 
-        long long dpB = 6; 
-
-        for (int i = 2; i <= n; i++) {
-            long long newA = (dpA * 3 + dpB * 2) % MOD;
-            long long newB = (dpA * 2 + dpB * 2) % MOD;
-            dpA = newA;
-            dpB = newB;
+        long long MOD = 1e9 + 7;
+        
+        // 1-р мөрний суурь утгууд
+        long long aba = 6;
+        long long abc = 6;
+        
+        // 2-р мөрнөөс n-р мөр хүртэл давтана
+        for (int i = 2; i <= n; ++i) {
+            long long prev_aba = aba;
+            long long prev_abc = abc;
+            
+            // Шилжилтийн томьёо
+            aba = (3 * prev_aba + 2 * prev_abc) % MOD;
+            abc = (2 * prev_aba + 2 * prev_abc) % MOD;
         }
-
-        return (dpA + dpB) % MOD;
+        
+        // Нийт боломж нь хоёр хэв маягийн нийлбэр байна
+        return (aba + abc) % MOD;
     }
 };
