@@ -1,16 +1,25 @@
+
 class Solution {
 public:
-    long long countSubarrays(vector<int>& nums, long long k) {
+    long long countSubarrays(std::vector<int>& nums, long long k) {
+        long long ans = 0;
+        long long sum = 0; // Overflow-оос сэргийлж long long
+        int left = 0;
         int n = nums.size();
-        long long res = 0, total = 0;
-        for (int i = 0, j = 0; j < n; j++) {
-            total += nums[j];
-            while (i <= j && total * (j - i + 1) >= k) {
-                total -= nums[i];
-                i++;
+
+        for (int right = 0; right < n; right++) {
+            sum += nums[right]; // Баруун захаар шинэ элементээ оруулна
+
+            // Оноо нь k-аас их буюу тэнцүү байвал зүүн захаа хумина
+            while (sum * (right - left + 1) >= k) {
+                sum -= nums[left];
+                left++;
             }
-            res += j - i + 1;
+
+            // right индексээр төгссөн хүчинтэй бүх дэд массивуудыг тоолно
+            ans += (right - left + 1);
         }
-        return res;
+
+        return ans;
     }
 };
