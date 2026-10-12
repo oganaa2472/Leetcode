@@ -1,58 +1,49 @@
 class Solution {
 public:
+    int binarysearch(vector<vector<int>>& meetings, int end) {
+        int l = 0, r = meetings.size() - 1;
+        int ans = meetings.size();
+        while (l <= r) {
+            int m = l + (r - l) / 2;
+            if (meetings[m][0] >= end) {
+                ans = m;
+                r = m - 1;
+            } else {
+                l = m + 1;
+            }
+        }
+        return ans;
+    }
+
     long long maxEarnings(vector<vector<int>>& meetings) {
         int n = meetings.size();
+        sort(meetings.begin(), meetings.end());
 
-        sort(meetings.begin(), meetings.end(),
-             [](const auto& a, const auto& b) {
-                 return a[0] < b[0];
-             });
-
-        vector<int> starts(n);
-
-        for (int i = 0; i < n; i++) {
-            starts[i] = meetings[i][0];
-        }
-
-        // dp[i]: i-р уулзалтыг заавал сонгосон
-        // үед олох хамгийн их орлого
-        vector<long long> dp(n);
-
-        // suffix[i] = max(starts[k] + dp[k]), k >= i
-        vector<long long> suffix(n + 1, LLONG_MIN);
-
-        long long ans = LLONG_MIN;
+        vector<long long> dp(n + 1, 0);
 
         for (int i = n - 1; i >= 0; i--) {
-            int start = meetings[i][0];
-            int end = meetings[i][1];
-            long long revenue = meetings[i][2];
+            const auto& meet = meetings[i];
 
-            // end[i]-ээс хойш эсвэл яг end[i]-д
-            // эхлэх эхний уулзалтыг олно
-            int j = lower_bound(
-                starts.begin() + i + 1,
-                starts.end(),
-                end
-            ) - starts.begin();
+            long long skip = dp[i + 1];
 
-            // Дараагийн уулзалтыг сонгохгүй байж болно
-            long long extra = 0;
+            int idx = binarysearch(meetings, meet[1]);
 
-            if (j < n) {
-                extra = max(0LL, suffix[j] - end);
-            }
+            long long last = meet[0] + meet[2];
+            long long intermediate = last - meet[1] + dp[idx];
 
-            dp[i] = revenue + extra;
-
-            suffix[i] = max(
-                suffix[i + 1],
-                (long long)start + dp[i]
-            );
-
-            ans = max(ans, dp[i]);
+            long long take = max(last, intermediate);
+            dp[i] = max(take, skip);
         }
 
-        return ans;
+        long long mx = 0;
+        for (int i = 0; i < n; i++) {
+            int idx = binarysearch(meetings, meetings[i][1]);
+            long long curr = meetings[i][2];
+            
+            mx = max(mx, curr);
+            mx = max(mx, curr - meetings[i][1] + dp[idx]);
+        }
+
+        return mx;
     }
 };
