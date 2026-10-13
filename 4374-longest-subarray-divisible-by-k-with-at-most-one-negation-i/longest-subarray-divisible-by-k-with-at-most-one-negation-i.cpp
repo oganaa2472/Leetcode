@@ -1,34 +1,35 @@
-
 class Solution {
 public:
     int longestSubarray(vector<int>& nums, int k) {
+        
+        // case 1 = sum % k == 0
+        // case 2 = (sum-2x)%k == 0 -----> sum % k = 2x % k
+
+        typedef long long ll;
+
         int n = nums.size();
-        int ans = 0;
+        int max_len = 0;
 
-        for (int l = 0; l < n; l++) {
-            long long sum = 0;
-            unordered_set<int> seen;
+        for( int i = 0; i < n; i++ ){
 
-            for (int r = l; r < n; r++) {
-                sum += nums[r];
+            unordered_set<int> s;
+            ll curr_sum = 0;
 
-                int rem = ((sum % k) + k) % k;
-                int x = ((2LL * nums[r] % k) + k) % k;
+            for( int j = i; j < n; j++ ){
 
-                seen.insert(x);
+                curr_sum += nums[j];
 
-                // Нөхцөл 1: Нийлбэр k-д хуваагдана
-                if (rem == 0) {
-                    ans = max(ans, r - l + 1);
-                }
+                ll remove = (((ll)2 * nums[j])%k + k) % k;
+                s.insert(remove);
 
-                // Нөхцөл 2: Нэг элементийн тэмдгийг өөрчилж болно
-                if (seen.count(rem)) {
-                    ans = max(ans, r - l + 1);
-                }
+                ll sum = ((curr_sum % k) + k) % k;
+
+                if( sum == 0 || s.find(sum) != s.end() ) max_len = max( max_len , j-i+1 );
+
             }
         }
 
-        return ans;
+        return max_len;
+
     }
 };
