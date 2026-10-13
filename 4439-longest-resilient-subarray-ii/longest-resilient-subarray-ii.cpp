@@ -2,30 +2,21 @@ class Solution {
 public:
     int resilientSubarray(vector<int>& nums, int k) {
         int n = nums.size();
-        int ans = 1;
+        for(auto &num : nums) num %= k;
+        int l = 0, r = 0;
+        int mx = 1;
 
-        for (int i = 0; i < n; ) {
-            int r = ((nums[i] % k) + k) % k;
-            int j = i;
-
-            while (j < n &&
-                   ((nums[j] % k) + k) % k == r) {
-                j++;
+        while(r < n){
+            if(nums[l] != nums[r]){
+                l = r;
+            }
+            long long sum = 1LL * nums[r] * (r-l+1);
+             if(sum % k == nums[r]){
+                mx = max(mx, r-l+1);
             }
 
-            int len = j - i;
-
-            if (r == 0) {
-                ans = max(ans, len);
-            } else {
-                int need = k / gcd(k, r);
-                int candidate = (len - 1) / need * need + 1;
-                ans = max(ans, candidate);
-            }
-
-            i = j;
+            r++;
         }
-
-        return ans;
+        return mx;
     }
 };
