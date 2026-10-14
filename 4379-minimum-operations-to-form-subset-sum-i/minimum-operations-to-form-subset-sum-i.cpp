@@ -1,37 +1,61 @@
+#include <vector>
+#include <algorithm>
+#include <climits>
+
+using namespace std;
+
 class Solution {
 public:
-    int solve(vector<int>& nums,int i,int sum,vector<vector<int>>& dp){
-        if(sum==0) return 0;                 //base case
-        if(i>=nums.size()) return INT_MAX;  //base case
-        if(sum<0) return INT_MAX;           //base case
-        if(dp[i][sum]!=-1) return dp[i][sum]; ///base case
-        int ans=INT_MAX;
-        ans=min(ans,solve(nums,i+1,sum,dp)); // skip case
-        int val=nums[i];     // Just storing in val
-        int opp=0;  // no of opp 
-        while(val){     // first dividing till val !=0 and exploare the all the case
-            val/=2; 
-            opp++;
-            int rr=solve(nums,i+1,sum-val,dp); // explore
-            if(rr!=INT_MAX) rr=rr+opp; // edge case if rr!=INT_MAX;
-             ans=min(ans,rr);
-        }
-        val=nums[i];  // RE ASSGINE VALUES FOR THE MULTIPLICATION
-        opp=0; // reset to 0 
-        while(val<=5000){  // multiply till the value<= 5000 and explore
-            int rr=solve(nums,i+1,sum-val,dp); // explore
-            if(rr!=INT_MAX) rr=rr+opp; //edge case
-            ans=min(ans,rr);
-            opp++; 
-            val=val*2; 
-        }
-        return dp[i][sum]=ans; /// from all choose the best one
-    }
     int minOperations(vector<int>& nums, int sum) {
-        int n=nums.size();
-       vector<vector<int>> dp(n+1,vector<int>(5002,-1));
-        int ans=solve(nums,0,sum,dp);
-        if(ans==INT_MAX) return -1;// -1 case 
-        return ans;
+        // dp[w] = w нийлбэрийг үүсгэхэд шаардагдах хамгийн цөөхөн үйлдлийн тоо
+        vector<int> dp(sum + 1, INT_MAX);
+        dp[0] = 0;
+
+        for (int x : nums) {
+            // 0/1 Knapsack: багтаамжийг буурахаар давталт хийнэ
+            for (int w = sum; w >= 0; --w) {
+                if (dp[w] == INT_MAX) continue;
+
+                // 1. Зөвхөн үржүүлэх эсвэл хэвээр үлдээх хувилбарууд
+                int ops = 0;
+                long long curr = x;
+                while (w + curr <= sum) {
+                    // Хэрэв curr-ийг нэмэхэд sum хэтрэхгүй бол DP-г шинэчилнэ
+                    // Гэхдээ knapsack-ийн стандарт чиглэлээр буюу w-ээс sum руу явах эсвэл 
+                    // доорх байдлаар гаднаас нь nums элемент бүрээр loop хийж болно.
+                }
+            }
+        }
+
+        // Үүнийг илүү хялбарр уламжлалт knapsack хэлбэрээр бичвэл:
+        vector<int> f(sum + 1, 1e9);
+        f[0] = 0;
+
+        for (int x : nums) {
+            for (int w = sum; w >= 0; --w) {
+                // Элемент тус бүрийн хувьд үржүүлэх болон хуваах боломжуудыг шалгах
+                // 1. Multiply sequence (or zero multiplication)
+                int i = 0;
+                long long y = x;
+                while (y <= w) {
+                    f[w] = min(f[w], f[w - y] + i);
+                    ++i;
+                    y <<= 1;
+                }
+
+                // 2. Division sequence
+                i = 1;
+                int val = x >> 1;
+                while (val > 0) {
+                    if (val <= w) {
+                        f[w] = min(f[w], f[w - val] + i);
+                    }
+                    ++i;
+                    val >>= 1;
+                }
+            }
+        }
+
+        return f[sum] > 500000 ? -1 : f[sum];
     }
 };
