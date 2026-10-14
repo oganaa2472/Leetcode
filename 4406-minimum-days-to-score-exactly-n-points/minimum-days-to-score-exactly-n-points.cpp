@@ -1,31 +1,41 @@
+#include <vector>
+#include <algorithm>
+#include <climits>
+
+using namespace std;
+
 class Solution {
-public:
-    int minDays(int n) {
+private:
+    vector<int> memo;
 
-        vector<int> dp( n+1 , INT_MAX ) ;
-        dp[0] = 0 ;
+    int solve(int s) {
+        if (s == 0) return 0;
+        if (memo[s] != -1) return memo[s];
 
-        for ( int score = 1 ; score <= n ; score++ ) {
+        int min_days = INT_MAX;
 
-            long long sum = 0 ;
+        // k урттай цуврал бүрийг шалгах (T_k <= s байх хүртэл)
+        for (long long k = 1; ; ++k) {
+            long long t_k = k * (k + 1) / 2;
+            if (t_k > s) break;
 
-            for ( int k = 1 ; k <= score ; k++ ) {
-
-                sum += k ;
-
-                if ( sum > score ) break ;
-
-                int remaining = score - sum ;
-
-                if ( remaining == 0 ) dp[score] = min( dp[score] , k ) ;
-
-                else if ( dp[remaining] != INT_MAX ) 
-                dp[score] = min( dp[score] , dp[remaining]+k+1 ) ;
-                
+            if (t_k == s) {
+                min_days = min(min_days, (int)k);
+            } else {
+                int res = solve(s - t_k);
+                if (res != INT_MAX) {
+                    // k хоног + 1 хоног алгассан (skip) + үлдсэн оноог цуглуулсан хоногууд
+                    min_days = min(min_days, (int)k + 1 + res);
+                }
             }
         }
 
-        return dp[n] ;
-        
+        return memo[s] = min_days;
+    }
+
+public:
+    int minDays(int n) {
+        memo.assign(n + 1, -1);
+        return solve(n);
     }
 };
