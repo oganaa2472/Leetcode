@@ -1,45 +1,45 @@
 class Solution {
 public:
-    vector<vector<int>> dp;
-    vector<vector<int>> dist;
-    int INF = INT_MAX;
-    int n ;
-    int tsp(int pos, int mask) {
-        if (mask == (1 << n) - 1) return 0;
-
-        if (dp[pos][mask] != -1) return dp[pos][mask];
-
-        int ans = INF;
-        for (int nxt = 0; nxt < n; nxt++) {
-            if ((mask & (1 << nxt)) == 0) { 
-                ans = min(ans, dist[pos][nxt] + tsp(nxt, mask | (1 << nxt)));
-            }
-        }
-        return dp[pos][mask] = ans;
-    }
     int shortestPathLength(vector<vector<int>>& graph) {
-        n = graph.size(); 
-        dp.resize(n,vector<int>(1<<n,-1));
-        dist.assign(n, vector<int>(n, INF));
-        for (int i = 0; i < n; i++) {
-            queue<pair<int, int>> q;
-            q.push({i, 0});
-            dist[i][i] = 0;
-            while (!q.empty()) {
-                auto [node, d] = q.front();
-                q.pop();
-                for (int neighbor : graph[node]) {
-                    if (dist[i][neighbor] == INF) { // Анх удаа хүрч байгаа бол
-                        dist[i][neighbor] = d + 1;
-                        q.push({neighbor, d + 1});
-                    }
-                }
+        int n = graph.size();
+    if (n == 1) return 0;
+
+    int full_mask = (1 << n) - 1; // Бүх зангилааг зочилсон үеийн маск (жишээ нь n=3 үед 111 буюу 7)
+    
+    // visited[node][mask] : Тухайн node дээр тухайн mask-тай төлөвтэй зочилсон эсэх
+    vector<vector<bool>> visited(n, vector<bool>(1 << n, false));
+    
+    // Queue хадгалах хэлбэр: {node, mask, dist}
+    queue<tuple<int, int, int>> q;
+
+    // Дурын зангилаанаас эхэлж болох тул бүх зангилааг эхлэх цэгээр оруулна
+    for (int i = 0; i < n; ++i) {
+        int initial_mask = 1 << i;
+        q.push({i, initial_mask, 0});
+        visited[i][initial_mask] = true;
+    }
+
+    while (!q.empty()) {
+        auto [node, mask, dist] = q.front();
+        q.pop();
+
+        // Хэрэв бүх зангилааг зочилсон бол хамгийн анхны тул энэ нь хамгийн богино зам мөн
+        if (mask == full_mask) {
+            return dist;
+        }
+
+        // Хөрш зангилаанууд руу шилжих
+        for (int neighbor : graph[node]) {
+            int next_mask = mask | (1 << neighbor);
+
+            if (!visited[neighbor][next_mask]) {
+                visited[neighbor][next_mask] = true;
+                q.push({neighbor, next_mask, dist + 1});
             }
         }
-        int ans = INF;
-        for (int start = 0; start < n; start++) {
-            ans = min(ans, tsp(start, 1 << start));
-        }
-        return ans;
+    }
+
+    return 0;
+
     }
 };
