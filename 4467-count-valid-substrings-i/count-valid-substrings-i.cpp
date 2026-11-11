@@ -1,16 +1,23 @@
 class Solution {
 public:
     long long countValidSubstrings(string s) {
-        long long count = 0;
-        int n = s.size();
-        int i = 0;
-        int j = 0;
-        while (j < n) {
-            if (j >= 2 && s[j - 2] == 'a' && s[j - 1] == 'b' && s[j] == 'c') 
-                i = j - 1;
-            count = count + (j - i + 1);
-            j++;
+       long long ans = 0;
+    int left = 0;
+    int n = s.size();
+
+    for (int right = 0; right < n; right++) {
+
+        // Check whether the last 3 characters are "abc"
+        if (right >= 2 &&
+            s[right - 2] == 'a' &&
+            s[right - 1] == 'b' &&
+            s[right] == 'c') {
+
+            left = right - 1;
         }
-        return count;
+
+        ans += right - left + 1;
+    }
+    return ans;
     }
 };
