@@ -2,7 +2,7 @@ class Solution {
 public:
     int maxSelectedElements(vector<int>& nums) {
          unordered_map<int, int> d;
-            sort(nums.begin(),nums.end());
+        sort(nums.begin(),nums.end());
 
         int maxLength = 0;
         for (int num : nums) {
